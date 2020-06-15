@@ -1,10 +1,11 @@
 const express = require('express');
+const tournamentRoute = require('./routes/tournament.route');
 
 const app = express();
 
-app.all('*',(req,res,next)=>{
-    res.status(200).end('Hello World')
-});
+app.use(express.json());
+
+app.use('/api/v1/tournaments', tournamentRoute);
 
 
 
