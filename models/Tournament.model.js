@@ -6,7 +6,7 @@ const tournamentSchema = new mongoose.Schema({
         require: true,
     },
     host: {
-        type: String,
+        type: mongoose.ObjectId,
         require: true
     },
     entryFee: {

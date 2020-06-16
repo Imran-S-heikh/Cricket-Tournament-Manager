@@ -5,9 +5,9 @@ const tournamentController = require('../controllers/Tournament.controller');
 
 const router = express.Router();
 
-router.route('/teams')
-      .get(tournamentController.getTeams)
-      .post(tournamentController.createTeam)
+// router.route('/teams')
+//       .get(tournamentController.getTeams)
+//       .post(tournamentController.createTeam)
 
 router.route('/teams/:id')
       .get(tournamentController.getTeam)
