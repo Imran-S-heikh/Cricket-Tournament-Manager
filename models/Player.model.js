@@ -9,7 +9,7 @@ const playerSchema = new mongoose.Schema({
         type: String,
         require: true,
         default: 'allrounder',
-        enum: ['wicket-keeper','bats-man','bowler','allrounder']
+        enum: ['wicket-keeper','bats-man','bowler','allrounder','umpire','captain']
     },
     email: {
         type: String,
@@ -18,6 +18,11 @@ const playerSchema = new mongoose.Schema({
     home: {
         type: String,
         required: true
+    },
+    status: {
+        type: String,
+        default: 'free-agent',
+        enum: ['free-agent','pending','busy']
     } 
 });
 

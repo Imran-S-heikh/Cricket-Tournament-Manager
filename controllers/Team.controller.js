@@ -1,5 +1,6 @@
 const catchAsync = require('../utils/catch.async.error');
 const Team = require('../models/Team.model');
+const Player = require('../models/Player.model');
 
 
 exports.createTeam = catchAsync(async (req, res, next) => {
@@ -39,6 +40,7 @@ exports.getTeam = catchAsync(async (req, res, next) => {
 
 
 exports.joinTeam = catchAsync(async (req, res, next) => {
+    await Player.findByIdAndUpdate(req.body.id,{status: 'pending'});
     const newTeam = await Team.findByIdAndUpdate(req.params.id,{ $addToSet: {players: [req.body.id]} },{new: true})
 
     res.status(200).json({

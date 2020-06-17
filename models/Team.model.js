@@ -8,8 +8,7 @@ const teamSchema = new mongoose.Schema({
     players: [
         {
             type: mongoose.Schema.ObjectId,
-            unique: true,
-            ref: 'Player'
+            ref: 'Player'   
         }
     ]
 });
