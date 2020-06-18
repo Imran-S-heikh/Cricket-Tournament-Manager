@@ -9,7 +9,7 @@ const playerSchema = new mongoose.Schema({
         type: String,
         require: true,
         default: 'allrounder',
-        enum: ['wicket-keeper','bats-man','bowler','allrounder','umpire','captain']
+        enum: ['wicket-keeper','bats-man','bowler','allrounder','umpire','captain','host']
     },
     email: {
         type: String,

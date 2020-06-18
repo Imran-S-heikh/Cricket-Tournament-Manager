@@ -12,7 +12,7 @@ router.route('/:id')
       .get(teamController.getTeam)
 
 router.route('/join/:id')
-      .post(teamController.joinTeam)
+      .post(teamController.joinTournament)
 
 router.route('/delete/:id')
       .delete(teamController.deletePlayer)

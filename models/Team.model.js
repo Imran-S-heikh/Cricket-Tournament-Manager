@@ -10,7 +10,12 @@ const teamSchema = new mongoose.Schema({
             type: mongoose.Schema.ObjectId,
             ref: 'Player'   
         }
-    ]
+    ],
+    status: {
+        type: String,
+        default: 'free-agent',
+        enum: ['busy','pending','free-agent']
+    }
 });
 
 const Team = mongoose.model('Team', teamSchema);

@@ -7,11 +7,10 @@ const router = express.Router();
 
 // router.route('/teams')
 //       .get(tournamentController.getTeams)
-//       .post(tournamentController.createTeam)
+//       .post(tournamentController.joinTour)
 
 router.route('/teams/:id')
-      .get(tournamentController.getTeam)
-      // .post(tournamentController.de)
+      .get(tournamentController.getTeams)
 
 router.route('/')
       .get(tournamentController.getTournaments)

@@ -1,9 +1,11 @@
 const catchAsync = require('../utils/catch.async.error');
 const Team = require('../models/Team.model');
 const Player = require('../models/Player.model');
+const Tournament = require('../models/Tournament.model');
 
 
 exports.createTeam = catchAsync(async (req, res, next) => {
+    await Player.findByIdAndUpdate(req.body.id,{$set: {status: 'pending',role: 'captain'}})
     const newTeam = await Team.create(req.body);
 
     res.status(200).json({
@@ -39,14 +41,17 @@ exports.getTeam = catchAsync(async (req, res, next) => {
 });
 
 
-exports.joinTeam = catchAsync(async (req, res, next) => {
-    await Player.findByIdAndUpdate(req.body.id,{status: 'pending'});
-    const newTeam = await Team.findByIdAndUpdate(req.params.id,{ $addToSet: {players: [req.body.id]} },{new: true})
+exports.joinTournament = catchAsync( async (req,res)=>{
+    const {id} = req.params;
+    const {ownId} = req.body;
+    await Team.findByIdAndUpdate(ownId,{$set: {status: 'pending'}})
+    const newTournament =await Tournament.findByIdAndUpdate(id,{ $addToSet: {teams: [ownId]} },{new: true})
+
 
     res.status(200).json({
         status: 'success',
         data: {
-            team: newTeam
+            tournament: newTournament
         }
     })
 });

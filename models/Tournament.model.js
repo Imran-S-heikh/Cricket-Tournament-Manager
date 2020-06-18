@@ -33,6 +33,7 @@ const tournamentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    teams: [mongoose.Schema.ObjectId],
     thirdPrize: String,
     manOfTheMatch: String,
     manOfTheTournament: String

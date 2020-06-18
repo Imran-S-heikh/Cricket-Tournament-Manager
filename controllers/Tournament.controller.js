@@ -1,5 +1,6 @@
 const catchAsync = require('../utils/catch.async.error');
 const Tournament = require('../models/Tournament.model');
+const Player = require('../models/Player.model');
 
 exports.getTournaments = catchAsync(async(req,res)=>{
     const tournaments = await Tournament.find();
@@ -13,6 +14,9 @@ exports.getTournaments = catchAsync(async(req,res)=>{
 });
 
 exports.createTournament = catchAsync( async (req,res)=>{
+    const {host} = req.body;
+
+    await Player.findByIdAndUpdate(host,{$set: {role: 'host',status: 'pending'}})
     const newTournament = await Tournament.create(req.body);
 
     res.status(200).json({
