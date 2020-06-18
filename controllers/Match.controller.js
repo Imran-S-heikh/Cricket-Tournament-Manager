@@ -15,38 +15,71 @@ exports.getMatches = catchAsync(async (req, res, next) => {
 
 exports.getMatch = catchAsync(async (req, res, next) => {
     const match = await Match.findById(req.params.id)
-        .populate({ 
-            path: 'tossLoseTeam',
-            populate: {
-                path: 'playingEleven',
-                model: 'Player',
-                select: 'name'
-            }
-         })
-        .populate({ 
-            path: 'tossWonTeam',
-            populate: {
-                path: 'playingEleven',
-                model: 'Player',
-                select: 'name'
-            }
-         })
-         .populate({ 
-            path: 'tossWonTeam',
-            populate: {
-                path: 'batting',
-                populate: {
-                    path: 'batsman',
-                    model: 'Player',
-                    select: 'name'
-                }
-            }
-         })
-        .populate({ path: 'Overs.bowler', select: 'name' })
-        .populate({ path: 'batting.batsman', select: 'name' })
-        .populate({ path: 'tournament', select: 'name' })
-        .populate({ path: 'umpires', select: 'name' })
-        .populate({ path: 'toss.tossWon', select: 'name' });
+        // .populate({ 
+        //     path: 'tossLoseTeam',
+        //     // model: 'matchTeamSchema',
+        //     populate: {
+        //         path: 'playingEleven',
+        //         model: 'Player',
+        //         select: 'name'
+        //     }
+        //  })
+        // .populate({ 
+        //     path: 'tossWonTeam',
+        //     // model: 'matchTeamSchema',
+        //     populate: {
+        //         path: 'playingEleven',
+        //         model: 'Player',
+        //         select: 'name'
+        //     }
+        //  })
+        //  .populate({ 
+        //     path: 'tossWonTeam',
+        //     // model: 'matchTeamSchema',
+        //     populate: {
+        //         path: 'batting',
+        //         populate: {
+        //             path: 'batsman',
+        //             model: 'Player',
+        //             select: 'name'
+        //         }
+        //     }
+        //  })
+        //  .populate({ 
+        //     path: 'tossLoseTeam',
+        //     // model: 'matchTeamSchema',
+        //     populate: {
+        //         path: 'batting',
+        //         populate: {
+        //             path: 'batsman',
+        //             model: 'Player',
+        //             select: 'name'
+        //         }
+        //     }
+        //  })
+        //  .populate({ 
+        //     path: 'tossLoseTeam',
+        //     // model: 'matchTeamSchema',
+        //     populate: {
+        //         path: 'overs',
+        //         populate: {
+        //             path: 'bowler',
+        //             model: 'Player',
+        //             select: 'name'
+        //         }
+        //     }
+        //  })
+        .populate([
+            {path:[
+                ...['overs.bowler',
+                'batting.batsman',
+                'playingEleven'].map(i=>'tossWonTeam.'+i),
+                ...['playingEleven',
+                'overs.bowler',
+                'batting.batsman'].map(i=>'tossLoseTeam.'+i),
+                'tournament umpires'
+            ].join(' '),select: 'name'},
+        ]);
 
     res.status(200).json({
         status: 'success',
@@ -67,13 +100,69 @@ exports.createMatch = catchAsync(async (req, res, next) => {
     });
 });
 
-exports.updateMatch = catchAsync(async (req, res, next) => {
-    const newMatch = await Match.findByIdAndUpdate(req.params.id,req.body, { new: true });
-    console.log(req.body.id)
+exports.updateOver = catchAsync(async (req,res,next)=>{
+    let updatedOver;
+    const {id} = req.params;
+    const {ball,team,overId} = req.body;
+    const query = {'_id': id,[`${team}.overs._id`]:overId};
+    const value = {$push: {[`${team}.overs.$.over`]: ball}};
+
+    const updatedCollection = await Match.findOneAndUpdate(query,value,{new: true});
+    updatedCollection[team].overs.forEach(el => {if(el.id === overId)updatedOver = el})
+
     res.status(200).json({
         status: 'success',
         data: {
-            match: newMatch
+            updatedOver: updatedOver
+        }
+    });
+});
+
+exports.createOver = catchAsync(async (req,res,next)=>{
+    const {id} = req.params;
+    const {over,team} = req.body;
+    const path = `${team}.overs`;
+
+    const newOver = await Match.findOneAndUpdate(id,{$push: {[path]:over}},{new: true});
+
+    res.status(200).json({
+        status: 'success',
+        data: {
+            newOver: newOver[team].overs.slice(-1)
+        }
+    });
+});
+
+exports.createBatsman = catchAsync(async (req,res,next)=>{
+    const {id} = req.params;
+    const {batting,team} = req.body;
+    const path = `${team}.batting`;
+    console.log(';;;;;')
+
+    const newBatsman = await Match.findOneAndUpdate(id,{$push: {[path]:batting}},{new: true});
+
+    res.status(200).json({
+        status: 'success',
+        data: {
+            newBatsman: newBatsman[team].batting.slice(-1)
+        }
+    });
+});
+
+exports.updateBatsman = catchAsync(async (req,res,next)=>{
+    let updatedScore;
+    const {id} = req.params;
+    const {score,team,scoreId} = req.body;
+    const query = {'_id': id,[`${team}.batting._id`]:scoreId};
+    const value = {$push: {[`${team}.batting.$.score`]: score}};
+
+    const updatedCollection = await Match.findOneAndUpdate(query,value,{new: true});
+    updatedCollection[team].batting.forEach(el => {if(el.id === scoreId)updatedScore = el})
+
+    res.status(200).json({
+        status: 'success',
+        data: {
+            updatedScore
         }
     });
 });

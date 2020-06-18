@@ -5,7 +5,7 @@ const matchTeamSchema = mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'Player'
     }],
-    Overs: [
+    overs: [
         {
             bowler: {
                 type: mongoose.Schema.ObjectId,
@@ -49,62 +49,8 @@ const matchSchema = new mongoose.Schema({
             enum: ['bat', 'ball']
         }
     },
-    tossWonTeam: {
-        playingEleven: [{
-            type: mongoose.Schema.ObjectId,
-            ref: 'Player'
-        }],
-        overs: [
-            {
-                bowler: {
-                    type: mongoose.Schema.ObjectId,
-                    ref: 'Player'
-                },
-                over: [String]
-            }
-        ],
-        batting: [
-            {
-                batsman: {
-                    type: mongoose.Schema.ObjectId,
-                    ref: 'Player'
-                },
-                score: [String]
-            }
-        ],
-        extra: {
-            batting: [String],
-            bowling: [String]
-        }
-    },
-    tossLoseTeam: {
-        playingEleven: [{
-            type: mongoose.Schema.ObjectId,
-            ref: 'Player'
-        }],
-        overs: [
-            {
-                bowler: {
-                    type: mongoose.Schema.ObjectId,
-                    ref: 'Player'
-                },
-                over: [String]
-            }
-        ],
-        batting: [
-            {
-                batsman: {
-                    type: mongoose.Schema.ObjectId,
-                    ref: 'Player'
-                },
-                score: [String]
-            }
-        ],
-        extra: {
-            batting: [String],
-            bowling: [String]
-        }
-    }
+    tossWonTeam: matchTeamSchema,
+    tossLoseTeam: matchTeamSchema
 });
 
 const Match = mongoose.model('Match', matchSchema);

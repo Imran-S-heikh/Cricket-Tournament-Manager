@@ -10,7 +10,7 @@ exports.getTournaments = catchAsync(async(req,res)=>{
             tournaments
         }
     });
-})
+});
 
 exports.createTournament = catchAsync( async (req,res)=>{
     const newTournament = await Tournament.create(req.body);
