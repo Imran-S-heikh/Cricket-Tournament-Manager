@@ -1,13 +1,12 @@
 const express = require('express');
 const playerController = require('../controllers/Player.controller');
-const { route } = require('./match.route');
+const authController   = require('../controllers/Auth.controller');
 
 
 const router = express.Router();
 
 router.route('/')
       .get(playerController.getPlayers)
-      .post(playerController.createPlayer)
       
 
 router.route('/:id')
@@ -15,5 +14,7 @@ router.route('/:id')
       .delete(playerController.deletePlayer);
       
 router.post('/join/:id',playerController.joinTeam);
+
+router.post('/signup',authController.signUp);
 
 module.exports = router;
