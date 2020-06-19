@@ -1,4 +1,7 @@
 const express     = require('express');
+const cookieParser =  require('cookie-parser');
+
+
 const teamRoute   = require('./routes/team.route');
 const playerRoute = require('./routes/player.route');
 const matchRoute  = require('./routes/match.route');
@@ -6,9 +9,11 @@ const tournamentRoute = require('./routes/tournament.route');
 const globalErrorHandler = require('./controllers/Error.controller');
 const AppError = require('./utils/app.error');
 
+
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.use('/api/v1/tournaments', tournamentRoute);
 app.use('/api/v1/players', playerRoute);

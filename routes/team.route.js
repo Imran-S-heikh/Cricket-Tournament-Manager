@@ -1,20 +1,21 @@
 const express = require('express');
 const teamController = require('../controllers/Team.controller');
+const authController = require('../controllers/Auth.controller');
 
 
 const router = express.Router();
 
 router.route('/')
       .get(teamController.getTeams)
-      .post(teamController.createTeam)
+      .post(authController.protect,teamController.createTeam)
 
 router.route('/:id')
       .get(teamController.getTeam)
 
 router.route('/join/:id')
-      .post(teamController.joinTournament)
+      .post(authController.protect,teamController.joinTournament)
 
 router.route('/delete/:id')
-      .delete(teamController.deletePlayer)
+      .delete(authController.protect,teamController.deletePlayer)
 
 module.exports = router;

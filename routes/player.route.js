@@ -13,7 +13,7 @@ router.route('/:id')
       .get(playerController.getPlayer)
       .delete(playerController.deletePlayer);
       
-router.post('/join/:id',playerController.joinTeam);
+router.post('/join/:id',authController.protect,playerController.joinTeam);
 
 router.post('/signup',authController.signUp);
 router.post('/login',authController.logIn);
