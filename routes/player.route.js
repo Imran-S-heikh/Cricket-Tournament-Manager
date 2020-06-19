@@ -16,5 +16,6 @@ router.route('/:id')
 router.post('/join/:id',playerController.joinTeam);
 
 router.post('/signup',authController.signUp);
+router.post('/login',authController.logIn);
 
 module.exports = router;

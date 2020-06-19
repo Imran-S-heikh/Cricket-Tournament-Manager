@@ -58,6 +58,10 @@ playerSchema.pre('save', async function (next){
     next();
 });
 
+playerSchema.methods.checkPassword = async function(dbPassword,givenPassword){
+    return await bcrypt.compare(givenPassword,dbPassword);
+}
+
 const Player = mongoose.model('Player',playerSchema);
 
 module.exports = Player;
