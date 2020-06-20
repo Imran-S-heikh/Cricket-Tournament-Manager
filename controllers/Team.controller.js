@@ -5,7 +5,10 @@ const Tournament = require('../models/Tournament.model');
 
 
 exports.createTeam = catchAsync(async (req, res, next) => {
-    await Player.findByIdAndUpdate(req.body.id,{$set: {status: 'pending',role: 'captain'}})
+
+    req.body.captain = req.player.id; 
+
+    await Player.findByIdAndUpdate(req.player.id,{$addToSet: {role: 'captain'}},{$set: {status: 'pending'}})
     const newTeam = await Team.create(req.body);
 
     res.status(200).json({

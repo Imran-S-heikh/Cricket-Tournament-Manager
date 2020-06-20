@@ -49,6 +49,11 @@ const matchSchema = new mongoose.Schema({
             enum: ['bat', 'ball']
         }
     },
+    status: {
+        type: String,
+        default: 'running',
+        enum: ['running','finished','stopped']
+    },
     tossWonTeam: matchTeamSchema,
     tossLoseTeam: matchTeamSchema
 });

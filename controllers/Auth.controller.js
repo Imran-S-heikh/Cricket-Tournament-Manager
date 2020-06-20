@@ -56,6 +56,28 @@ exports.protect = catchAsync(async (req, res, next) => {
 
     const decoded = await promisify(jwt.verify)(token,process.env.JWT_SECRET);
 
-    req.user = {id: decoded.id}
+    const currentPlayer = await Player.findById(decoded.id);
+
+    if (!currentPlayer) return next(new AppError('Player Not found, Please Sign Up', 404));
+
+    req.player = currentPlayer;
+    next();
+});
+
+exports.umpireCheck = catchAsync(async(req,res,next)=>{
+    const {role,tournaments} = req.player;
+
+    //Check this is a umpire 
+    if (!role.includes('umpire')) {
+        return next(new AppError('Only a Umpire can update match',401));
+    }
+
+    // Check if Umpire Authorized by the Tournament
+    if(tournaments.current !== req.params.id){
+        return next(new AppError('You are not authorized in this tournament',401));
+    }else if (tournaments.current !== req.body.tournament) {
+        return next(new AppError('You are not authorized in this tournament',401));
+    }
+
     next();
 });

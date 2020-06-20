@@ -15,60 +15,6 @@ exports.getMatches = catchAsync(async (req, res, next) => {
 
 exports.getMatch = catchAsync(async (req, res, next) => {
     const match = await Match.findById(req.params.id)
-        // .populate({ 
-        //     path: 'tossLoseTeam',
-        //     // model: 'matchTeamSchema',
-        //     populate: {
-        //         path: 'playingEleven',
-        //         model: 'Player',
-        //         select: 'name'
-        //     }
-        //  })
-        // .populate({ 
-        //     path: 'tossWonTeam',
-        //     // model: 'matchTeamSchema',
-        //     populate: {
-        //         path: 'playingEleven',
-        //         model: 'Player',
-        //         select: 'name'
-        //     }
-        //  })
-        //  .populate({ 
-        //     path: 'tossWonTeam',
-        //     // model: 'matchTeamSchema',
-        //     populate: {
-        //         path: 'batting',
-        //         populate: {
-        //             path: 'batsman',
-        //             model: 'Player',
-        //             select: 'name'
-        //         }
-        //     }
-        //  })
-        //  .populate({ 
-        //     path: 'tossLoseTeam',
-        //     // model: 'matchTeamSchema',
-        //     populate: {
-        //         path: 'batting',
-        //         populate: {
-        //             path: 'batsman',
-        //             model: 'Player',
-        //             select: 'name'
-        //         }
-        //     }
-        //  })
-        //  .populate({ 
-        //     path: 'tossLoseTeam',
-        //     // model: 'matchTeamSchema',
-        //     populate: {
-        //         path: 'overs',
-        //         populate: {
-        //             path: 'bowler',
-        //             model: 'Player',
-        //             select: 'name'
-        //         }
-        //     }
-        //  })
         .populate([
             {path:[
                 ...['overs.bowler',
@@ -137,7 +83,6 @@ exports.createBatsman = catchAsync(async (req,res,next)=>{
     const {id} = req.params;
     const {batting,team} = req.body;
     const path = `${team}.batting`;
-    console.log(';;;;;')
 
     const newBatsman = await Match.findOneAndUpdate(id,{$push: {[path]:batting}},{new: true});
 
