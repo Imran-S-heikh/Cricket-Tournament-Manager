@@ -4,6 +4,7 @@ const catchAsync = require('../utils/catch.async.error');
 const { objSubtract } = require('../utils/filter.object');
 const Player = require('../models/Player.model');
 const AppError = require('../utils/app.error');
+const Team = require('../models/Team.model');
 
 const createToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -79,5 +80,19 @@ exports.umpireCheck = catchAsync(async(req,res,next)=>{
         return next(new AppError('You are not authorized in this tournament',401));
     }
 
+    next();
+});
+
+exports.checkCaptain = catchAsync(async(req,res,next)=>{
+    const {teamId} = req.body;
+    const {role,id} = req.player;
+
+    if(!role.includes('captain'))return next(new AppError('You are not Captain',401));
+    
+    const team = await Team.findById(teamId);
+ 
+    if (team.captain != id)return next(new AppError('Only team captain can do this',401));
+
+    req.team = team;
     next();
 });

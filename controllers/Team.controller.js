@@ -2,6 +2,7 @@ const catchAsync = require('../utils/catch.async.error');
 const Team = require('../models/Team.model');
 const Player = require('../models/Player.model');
 const Tournament = require('../models/Tournament.model');
+const AppError = require('../utils/app.error');
 
 
 exports.createTeam = catchAsync(async (req, res, next) => {
@@ -44,11 +45,18 @@ exports.getTeam = catchAsync(async (req, res, next) => {
 });
 
 
-exports.joinTournament = catchAsync( async (req,res)=>{
-    const {id} = req.params;
-    const {ownId} = req.body;
-    await Team.findByIdAndUpdate(ownId,{$set: {status: 'pending'}})
-    const newTournament =await Tournament.findByIdAndUpdate(id,{ $addToSet: {teams: [ownId]} },{new: true})
+exports.joinTournament = catchAsync( async (req,res,next)=>{
+    const tournamentId = req.params.id;
+    const {id} = req.team;
+
+    const tournament = await Tournament.findById(tournamentId);
+    
+    const arr = tournament.teams.map((el)=> el.team == id);
+
+    if (arr.includes(true)) return next(new AppError('Team already exist',400));
+
+    await Team.findByIdAndUpdate(id,{$set: {status: 'pending'}})
+    const newTournament =await Tournament.findByIdAndUpdate(tournamentId,{$addToSet: {teams: {team: id}}},{new: true})
 
 
     res.status(200).json({

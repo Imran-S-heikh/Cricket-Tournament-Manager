@@ -9,6 +9,17 @@ const tournamentSchema = new mongoose.Schema({
         type: mongoose.ObjectId,
         require: true
     },
+    umpires: [{
+        status: {
+            type: String,
+            default: 'pending',
+            enum: ['pending', 'approved', 'busted']
+        },
+        umpire: {
+            type: mongoose.Schema.ObjectId,
+            ref: 'Player'
+        }
+    }],
     entryFee: {
         type: Number,
         required: true
@@ -33,12 +44,25 @@ const tournamentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    teams: [mongoose.Schema.ObjectId],
+    teams: [
+        {
+            status: {
+                type: String,
+                default: 'pending',
+                enum: ['pending','approved','busted']
+            },
+            team: {
+                type: mongoose.Schema.ObjectId,
+                ref: 'Team',
+                unique: true
+            }
+        }
+    ],
     thirdPrize: String,
     manOfTheMatch: String,
     manOfTheTournament: String
 });
 
-const Tournament = mongoose.model('Tournament',tournamentSchema);
+const Tournament = mongoose.model('Tournament', tournamentSchema);
 
 module.exports = Tournament;

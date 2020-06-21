@@ -1,6 +1,7 @@
 const express = require('express');
 const tournamentController = require('../controllers/Tournament.controller');
-const authController       = require('../controllers/Auth.controller');
+const authController = require('../controllers/Auth.controller');
+const playerController = require('../controllers/Player.controller');
 
 
 
@@ -15,7 +16,10 @@ router.route('/teams/:id')
 
 router.route('/')
       .get(tournamentController.getTournaments)
-      .post(authController.protect,tournamentController.createTournament)
+      .post(authController.protect, tournamentController.createTournament)
+
+router.route('/join/:id')
+      .post(authController.protect, playerController.joinTournamentUmpire);
 
 router.route('/:id')
       .get(tournamentController.getTournament)
