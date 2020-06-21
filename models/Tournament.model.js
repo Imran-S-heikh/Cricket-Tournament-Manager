@@ -53,8 +53,7 @@ const tournamentSchema = new mongoose.Schema({
             },
             team: {
                 type: mongoose.Schema.ObjectId,
-                ref: 'Team',
-                unique: true
+                ref: 'Team'
             }
         }
     ],

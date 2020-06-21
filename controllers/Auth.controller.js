@@ -5,6 +5,7 @@ const { objSubtract } = require('../utils/filter.object');
 const Player = require('../models/Player.model');
 const AppError = require('../utils/app.error');
 const Team = require('../models/Team.model');
+const Tournament = require('../models/Tournament.model');
 
 const createToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -91,8 +92,25 @@ exports.checkCaptain = catchAsync(async(req,res,next)=>{
     
     const team = await Team.findById(teamId);
  
+    if (!team)return next(new AppError('No team found',404));
     if (team.captain != id)return next(new AppError('Only team captain can do this',401));
 
     req.team = team;
+    next();
+});
+
+
+
+exports.checkHost = catchAsync(async (req,res,next)=>{
+    const {role,id} = req.player;
+    const tournamentId = req.player.tournaments.current;
+
+    if(!role.includes('host'))return next(new AppError('You are not Host',401));
+
+    const tournament = await Tournament.findById(tournamentId);
+    if (!tournament)return next(new AppError('No tournament found',404));
+    if (tournament.host != id)return next(new AppError('Only tournament host can do this',401));
+  
+    req.tournament = tournament;
     next();
 });

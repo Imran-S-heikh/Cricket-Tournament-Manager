@@ -17,6 +17,7 @@ router.route('/teams/:id')
 router.route('/')
       .get(tournamentController.getTournaments)
       .post(authController.protect, tournamentController.createTournament)
+      .patch(authController.protect,authController.checkHost,tournamentController.updateTournament);
 
 router.route('/join/:id')
       .post(authController.protect, playerController.joinTournamentUmpire);
