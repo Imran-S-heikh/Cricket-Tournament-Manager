@@ -1,6 +1,7 @@
 const catchAsync = require('../utils/catch.async.error');
 const Tournament = require('../models/Tournament.model');
 const Player = require('../models/Player.model');
+const AppError = require('../utils/app.error');
 
 exports.getTournaments = catchAsync(async(req,res)=>{
     const tournaments = await Tournament.find();
@@ -51,7 +52,25 @@ exports.getTeam = (req,res)=>{
 
 exports.updateTournament = catchAsync(async(req,res,next)=>{
     const tournamentId = req.tournament.id;
-    const tournament = await Tournament.update({'_id':tournamentId,'teams.team': req.body.teamId},{'teams.$.status': 'approved'});
+
+    let query;
+    let value;
+
+
+    if (req.body.type === 'accept-team') {
+        // Accept Team
+        query = {'_id': tournamentId,'teams.team': req.body.teamId};
+        value = {'teams.$.status': 'approved'};
+    }else if(req.body.type === 'accept-umpire'){
+        // Accept Umpire
+        query = {'_id': tournamentId,'umpires.umpire': req.body.umpireId};
+        value = {'umpires.$.status': 'approved'};
+    }else{
+        //Default
+        return next(new AppError('Please difine values correctly',400));
+    }
+
+    const tournament = await Tournament.updateOne(query,value);
 
     res.status(200).json({
         status: 'success',

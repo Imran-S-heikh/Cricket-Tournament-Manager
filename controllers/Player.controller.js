@@ -2,6 +2,7 @@ const catchAsync = require('../utils/catch.async.error');
 const Player = require('../models/Player.model');
 const Team = require('../models/Team.model');
 const Tournament = require('../models/Tournament.model');
+const AppError = require('../utils/app.error');
 
 
 exports.getPlayers = catchAsync(async (req, res, next) => {
@@ -45,6 +46,8 @@ exports.joinTournamentUmpire = catchAsync(async (req, res, next) => {
     const {id}  = req.player;
     await Player.findByIdAndUpdate(id,{status: 'pending'});
     const newTournament = await Tournament.findByIdAndUpdate(req.params.id,{ $push: {umpires: {umpire: id} }},{new: true})
+
+    if(!newTournament)return next(new AppError('Invalid Tournament id',400));
 
     res.status(200).json({
         status: 'success',
