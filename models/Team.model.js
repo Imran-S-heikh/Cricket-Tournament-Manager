@@ -16,6 +16,16 @@ const teamSchema = new mongoose.Schema({
         type: String,
         default: 'free-agent',
         enum: ['busy','pending','free-agent']
+    },
+    tournaments: {
+        current: {
+            type: mongoose.Schema.ObjectId,
+            ref: 'Tournament'
+        },
+        all: [{
+            type: mongoose.Schema.ObjectId,
+            ref: 'Tournament'
+        }]
     }
 });
 

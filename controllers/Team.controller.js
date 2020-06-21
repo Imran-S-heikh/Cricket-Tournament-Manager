@@ -55,8 +55,11 @@ exports.joinTournament = catchAsync( async (req,res,next)=>{
 
     if (arr.includes(true)) return next(new AppError('Team already exist',400));
 
-    await Team.findByIdAndUpdate(id,{$set: {status: 'pending'}})
-    const newTournament =await Tournament.findByIdAndUpdate(tournamentId,{$addToSet: {teams: {team: id}}},{new: true})
+    await Team.findByIdAndUpdate(id,{
+        $set: {status: 'pending','tournaments.current': tournamentId},
+        $addToSet: {'tournaments.all': tournamentId}
+    })
+    const newTournament = await Tournament.findByIdAndUpdate(tournamentId,{$addToSet: {teams: {team: id}}},{new: true})
 
 
     res.status(200).json({
