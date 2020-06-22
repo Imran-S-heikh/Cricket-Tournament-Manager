@@ -8,7 +8,6 @@ const playerSchema = new mongoose.Schema({
     },
     role: {
         type: [String],
-        default: 'allrounder',
         enum: ['wicket-keeper', 'bats-man', 'bowler', 'allrounder', 'umpire', 'captain', 'host']
     },
     email: {
