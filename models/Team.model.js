@@ -7,8 +7,15 @@ const teamSchema = new mongoose.Schema({
     },
     players: [
         {
-            type: mongoose.Schema.ObjectId,
-            ref: 'Player'   
+            status: {
+                type: String,
+                default: 'pending',
+                enum: ['pending','approved','busted','leaved']
+            },
+            player: {
+                type: mongoose.Schema.ObjectId,
+                ref: 'Player'
+            }
         }
     ],
     captain: mongoose.Schema.ObjectId,

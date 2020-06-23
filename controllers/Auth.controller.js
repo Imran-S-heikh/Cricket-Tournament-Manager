@@ -67,7 +67,8 @@ exports.protect = catchAsync(async (req, res, next) => {
 });
 
 exports.umpireCheck = catchAsync(async(req,res,next)=>{
-    const {role,tournaments} = req.player;
+    const {role,tournaments,status} = req.player;
+    const tournamentId   = req.params.id;
 
     //Check this is a umpire 
     if (!role.includes('umpire')) {
@@ -75,12 +76,11 @@ exports.umpireCheck = catchAsync(async(req,res,next)=>{
     }
 
     // Check if Umpire Authorized by the Tournament
-    if(tournaments.current !== req.params.id){
-        return next(new AppError('You are not authorized in this tournament',401));
-    }else if (tournaments.current !== req.body.tournament) {
+    if(tournaments.current !== tournamentId || status !== 'approved'){
         return next(new AppError('You are not authorized in this tournament',401));
     }
 
+    req.body.tournament = tournamentId;
     next();
 });
 

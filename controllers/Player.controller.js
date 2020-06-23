@@ -31,13 +31,21 @@ exports.deletePlayer = catchAsync(async (req, res, next) => {
 
 exports.joinTeam = catchAsync(async (req, res, next) => {
     const {id}  = req.player;
-    await Player.findByIdAndUpdate(id,{status: 'pending'});
-    const newTeam = await Team.findByIdAndUpdate(req.params.id,{ $addToSet: {players: [id]} },{new: true})
+    const currentTeam = req.player.teams.current;
+    const team = await Team.findByIdAndUpdate(req.params.id,{ $addToSet: {players: {player: id}} },{new: true});
 
+    if (!team)return next(new AppError('Failed to join Team,Provide a valid Team ID',400));
+
+    await Player.findByIdAndUpdate(id,{status: 'pending'});
+    console.log(currentTeam)
+    if(currentTeam) {
+        const upstat = await Team.updateOne({_id: currentTeam,'players.player': id},{$set: {'players.$.status': 'leaved'}});
+        console.log(upstat);
+    }
     res.status(200).json({
         status: 'success',
         data: {
-            team: newTeam
+            team: team
         }
     })
 });

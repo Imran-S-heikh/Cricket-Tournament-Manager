@@ -9,8 +9,8 @@ exports.createTeam = catchAsync(async (req, res, next) => {
 
     req.body.captain = req.player.id; 
 
-    await Player.findByIdAndUpdate(req.player.id,{$addToSet: {role: 'captain'}},{$set: {status: 'pending'}})
     const newTeam = await Team.create(req.body);
+    await Player.findByIdAndUpdate(req.player.id,{$addToSet: {role: 'captain','teams.all': newTeam._id},$set: {status: 'busy','teams.current': newTeam._id}})
 
     res.status(200).json({
         status: 'success',
@@ -80,4 +80,22 @@ exports.deletePlayer = catchAsync(async (req, res, next) => {
             data:null
         }
     })
+});
+
+exports.acceptPlayer = catchAsync(async(req,res,next)=>{
+    console.log('called')
+    const playerId = req.params.playerId;
+    const teamId  = req.team.id;
+
+    const team = await Team.updateOne({_id: teamId,'players.player': playerId},{$set: {'players.$.status': 'approved','players.$.player': playerId}});
+
+    if(!team) return next('Team update failed,Please provide a valid PlayerID',400);
+
+    await Player.findByIdAndUpdate(playerId,{$set: {status: 'busy','teams.current': teamId}, $addToSet: {'teams.all': teamId}});
+
+    res.status(200).json({
+        status: 'success',
+        data: team
+    });
+
 });
