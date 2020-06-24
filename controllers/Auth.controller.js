@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util')
 const catchAsync = require('../utils/catch.async.error');
-const { objSubtract } = require('../utils/filter.object');
+const { objFilter } = require('../utils/filter.object');
 const Player = require('../models/Player.model');
 const AppError = require('../utils/app.error');
 const Team = require('../models/Team.model');
@@ -14,7 +14,11 @@ const createToken = (id) => {
 }
 
 exports.signUp = catchAsync(async (req, res, next) => {
-    const filteredPlayer = objSubtract(req.body, 'status')
+
+    const fields = ['name','email','home','password','confirmPassword'];
+
+    const filteredPlayer = objFilter(req.body,...fields);
+    console.log(filteredPlayer);
     const newPlayer = await Player.create(filteredPlayer);
 
     newPlayer.password = undefined;

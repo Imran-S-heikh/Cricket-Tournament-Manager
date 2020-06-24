@@ -32,15 +32,19 @@ exports.deletePlayer = catchAsync(async (req, res, next) => {
 exports.joinTeam = catchAsync(async (req, res, next) => {
     const {id}  = req.player;
     const currentTeam = req.player.teams.current;
+
+    const checkExist = await Team.findOne({_id: req.params.id,'players.player': id});
+
+    if(checkExist)return next(new AppError('Player already exist',401));
+
     const team = await Team.findByIdAndUpdate(req.params.id,{ $addToSet: {players: {player: id}} },{new: true});
 
     if (!team)return next(new AppError('Failed to join Team,Provide a valid Team ID',400));
 
     await Player.findByIdAndUpdate(id,{status: 'pending'});
-    console.log(currentTeam)
+ 
     if(currentTeam) {
-        const upstat = await Team.updateOne({_id: currentTeam,'players.player': id},{$set: {'players.$.status': 'leaved'}});
-        console.log(upstat);
+        await Team.updateOne({_id: currentTeam,'players.player': id},{$set: {'players.$.status': 'leaved'}});
     }
     res.status(200).json({
         status: 'success',

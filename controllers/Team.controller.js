@@ -3,13 +3,15 @@ const Team = require('../models/Team.model');
 const Player = require('../models/Player.model');
 const Tournament = require('../models/Tournament.model');
 const AppError = require('../utils/app.error');
+const {objFilter} = require('../utils/filter.object');
 
 
 exports.createTeam = catchAsync(async (req, res, next) => {
+    const filteredTeam = objFilter(req.body,'name');
 
     req.body.captain = req.player.id; 
 
-    const newTeam = await Team.create(req.body);
+    const newTeam = await Team.create(filteredTeam);
     await Player.findByIdAndUpdate(req.player.id,{$addToSet: {role: 'captain','teams.all': newTeam._id},$set: {status: 'busy','teams.current': newTeam._id}})
 
     res.status(200).json({
