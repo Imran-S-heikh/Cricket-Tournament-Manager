@@ -1,0 +1,26 @@
+.nav-container{
+    display: flex;
+    justify-content: space-between;
+    height: 60px;
+    background: rgb(60, 51, 63);
+
+    .logo{
+        color: green;
+        font-weight: 700;
+        font-size: 25px;
+        align-self: center;
+        padding: 0 0 6px 40px;
+    }
+    .nav-items{
+        flex-grow: 1;
+        max-width: 40%;
+        display: flex;
+        justify-content: space-between;
+
+        li{
+            list-style: none;
+            color: white;
+            cursor: pointer;
+        }
+    }
+}

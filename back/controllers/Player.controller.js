@@ -16,9 +16,16 @@ exports.getPlayers = catchAsync(async (req, res, next) => {
     })
 });
 
-exports.getPlayer = () => {
+exports.getPlayer = catchAsync(async (req, res, next) => {
+    const player = await Player.findById(req.params.id);
 
-}
+    if (!player) return next(new AppError('No Player Found', 404));
+
+    res.status(200).json({
+        status: 'success',
+        player
+    })
+})
 
 exports.deletePlayer = catchAsync(async (req, res, next) => {
     await Player.findByIdAndDelete(req.params.id);
@@ -30,21 +37,21 @@ exports.deletePlayer = catchAsync(async (req, res, next) => {
 });
 
 exports.joinTeam = catchAsync(async (req, res, next) => {
-    const {id}  = req.player;
+    const { id } = req.player;
     const currentTeam = req.player.teams.current;
 
-    const checkExist = await Team.findOne({_id: req.params.id,'players.player': id});
+    const checkExist = await Team.findOne({ _id: req.params.id, 'players.player': id });
 
-    if(checkExist)return next(new AppError('Player already exist',401));
+    if (checkExist) return next(new AppError('Player already exist', 401));
 
-    const team = await Team.findByIdAndUpdate(req.params.id,{ $addToSet: {players: {player: id}} },{new: true});
+    const team = await Team.findByIdAndUpdate(req.params.id, { $addToSet: { players: { player: id } } }, { new: true });
 
-    if (!team)return next(new AppError('Failed to join Team,Provide a valid Team ID',400));
+    if (!team) return next(new AppError('Failed to join Team,Provide a valid Team ID', 400));
 
-    await Player.findByIdAndUpdate(id,{status: 'pending'});
- 
-    if(currentTeam) {
-        await Team.updateOne({_id: currentTeam,'players.player': id},{$set: {'players.$.status': 'leaved'}});
+    await Player.findByIdAndUpdate(id, { status: 'pending' });
+
+    if (currentTeam) {
+        await Team.updateOne({ _id: currentTeam, 'players.player': id }, { $set: { 'players.$.status': 'leaved' } });
     }
     res.status(200).json({
         status: 'success',
@@ -55,11 +62,11 @@ exports.joinTeam = catchAsync(async (req, res, next) => {
 });
 
 exports.joinTournamentUmpire = catchAsync(async (req, res, next) => {
-    const {id}  = req.player;
-    await Player.findByIdAndUpdate(id,{status: 'pending'});
-    const newTournament = await Tournament.findByIdAndUpdate(req.params.id,{ $push: {umpires: {umpire: id} }},{new: true})
+    const { id } = req.player;
+    await Player.findByIdAndUpdate(id, { status: 'pending' });
+    const newTournament = await Tournament.findByIdAndUpdate(req.params.id, { $push: { umpires: { umpire: id } } }, { new: true })
 
-    if(!newTournament)return next(new AppError('Invalid Tournament id',400));
+    if (!newTournament) return next(new AppError('Invalid Tournament id', 400));
 
     res.status(200).json({
         status: 'success',
