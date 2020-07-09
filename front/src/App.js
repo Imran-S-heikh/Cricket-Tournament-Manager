@@ -13,6 +13,8 @@ import Footer from './components/Footer.component';
 import Login from './components/Login.component';
 import Signup from './components/Signup.component';
 import Profile from './pages/Profile.page';
+import Matches from './pages/Matches.page';
+import Match from './pages/Match.page';
 
 function App() {
   return (
@@ -28,11 +30,17 @@ function App() {
         <Route path="/profile" exact>
           <Profile />
         </Route>
+         <Route path="/matches" exact>
+          <Matches />
+        </Route>
+        <Route path="/match/:id" exact>
+          <Match />
+        </Route>
          <Route path="/">
           <Home />
         </Route>
       </Switch>
-      <Footer />
+      {/* <Footer /> */}
     </Router>
   );
 }

@@ -65,7 +65,7 @@ function Sidebar({ toggle, drawer }) {
                             <ListItemText primary="Profile" />
                         </ListItem>
                         <ListItem button>
-                            <ListItemText primary="Matches" />
+                            <ListItemText primary="Matches" onClick={()=>handleClick('/matches')}/>
                         </ListItem>
                         <ListItem button>
                             <ListItemText primary="Cibtril" button />
