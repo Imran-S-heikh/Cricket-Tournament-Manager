@@ -6,7 +6,6 @@ import { useState } from 'react';
 import PlayerScore from '../components/PlayerScore.component';
 import Highlight from '../components/Highlight.component';
 import Popup from '../components/Popup.component';
-import { useRef } from 'react';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -58,6 +57,13 @@ function Match() {
     });
 
     const [score,setScore] = useState([]);
+    const [currentBowler,setCurrentBowler] = useState({name: 'Imran',id: '6348774'});
+    const [currentOver,setCurrentOver] = useState([]);
+    const [currentOverLegalDelivery,setCurrentOverLegalDelivery] = useState(0);
+
+    const [currentBatsman,setCurrentBatsman] = useState(null);
+    const [currentBatsmanRun,setCurrentBatsmanRun] = useState([]);
+
 
     const [player,setPlayer] = useState({
         name: 'Iqbal Khan',
@@ -68,10 +74,8 @@ function Match() {
     });
 
     const playerBowler = {
-        name: 'Pandiya',
-        score: [
-            [ 0, 4, 2, 0, 'w', 4 ]
-        ]
+        ...currentBowler,
+        score: [currentOver]
     }
 
     const scoreUpdates = [
@@ -92,24 +96,72 @@ function Match() {
             value: 2
         }
     ];
-    const scoreUpdatesExtra = [4, 'NB', 1, 2, 3];
+    const scoreUpdatesExtra = [
+        {
+            type: 4,
+            value: 4
+        },
+        {
+            type: 'wd',
+            value: 'wide'
+        },
+        {
+            type: 'nb',
+            value: 'no ball'
+        },
+        {
+            type: 1,
+            value: 1
+        },
+        {
+            type: 2,
+            value: 2
+        }
+    ];
 
     const endOfInnings = () => {
         setBattingTeam(bowlingTeam);
         setBowlingTeam(battingTeam);
     }
 
-    const handleUpdate = (event) => {
-        if (player.score[player.score.length - 1].length > 6) {
-            setPopup(true);
-            return;
-        }
-        setPlayer({...player,score:[player.score[0],player.score[1].concat(event.currentTarget.getAttribute('data-score'))]});
-        handleScore(event.currentTarget.getAttribute('data-score'))
+    const updateBowler = (score) =>{
+        //Check if its a legal delivery
+        const legalDeliveries = ['0','1','2','3','4','w'];
+        const isLegal = legalDeliveries.includes(score);
+        //if its lagal then set lagal delivery
+        isLegal && setCurrentOverLegalDelivery(currentOverLegalDelivery+1);
+
+        //Update current Over
+        setCurrentOver([...currentOver,score]);
+        
     }
 
-    const handleScore = (newScore)=>{
+    const updateBatsman = (score,extra) => {
+        //Check if its a extra run
+        //if extra then ignore it
+        if(extra) return;
+        
+        setCurrentBatsmanRun([...currentBatsmanRun,score]);
+    }
+
+    const updateScore = (newScore) => {
         setScore([...score,newScore])
+    }
+
+    const handleUpdate = (event,extra = false) => {
+        if(currentOverLegalDelivery >= 6)return setPopup(true);
+
+        const newScore = event.currentTarget.getAttribute('data-score');
+
+        updateBowler(newScore);
+        updateBatsman(newScore,extra);
+        updateScore(newScore);
+
+        console.log('delivery: ',currentOverLegalDelivery,'over:',currentOver)
+    }
+
+    const openPopup = () => {
+        
     }
 
     const handleClose = () => {
@@ -127,15 +179,15 @@ function Match() {
             <Box display="flex" flexGrow={1} mt={2}>
                 <PlayingEleven team={teamOne} />
                 <PlayerScore player={player}/>
-                {/* <Box flexGrow={1} >
+                <Box flexGrow={1} >
                     <Box display="flex" flexDirection="row" justifyContent="space-between">
                         <Box display="flex" flexDirection="column">
                             <Box component="span" textAlign="center">Extra</Box>
-                            <ScoreUpdater updates={scoreUpdatesExtra} />
+                            <ScoreUpdater handler={(e)=>{handleUpdate(e,true)}} updates={scoreUpdatesExtra} />
                             <Button onClick={endOfInnings}>End of Innings</Button>
                         </Box>
                     </Box>
-                </Box> */}
+                </Box>
                 <Box flexGrow={1}></Box>
                 <PlayerScore player={playerBowler}/>
                 <PlayingEleven team={teamTwo} />
@@ -152,4 +204,4 @@ function Match() {
     )
 }
 
-export default Match
+export default Match;
