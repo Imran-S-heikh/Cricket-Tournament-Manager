@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { AppBar, Toolbar, Button, IconButton, Typography, makeStyles, Drawer, Box } from '@material-ui/core';
+import { AppBar, Toolbar, IconButton, makeStyles, Box } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import { Link } from 'react-router-dom';
@@ -7,7 +7,6 @@ import Hide from './Hide.component';
 import HomeRoundedIcon from '@material-ui/icons/HomeRounded';
 import Sidebar from './Sidebar.component';
 
-const drawerWidth = 400;
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -23,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Header() {
     const classes = useStyles();
-    const [me, setMe] = useState({ active: true });
+    const [me] = useState({ active: true });
     const [drawer, setDrawer] = useState(false);
 
     const toggleDrawer = () => {

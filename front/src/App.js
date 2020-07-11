@@ -3,13 +3,11 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
 } from "react-router-dom";
-import { Button } from '@material-ui/core';
 import './App.css';
 import Home from './pages/Home.page';
 import Header from './components/Header.component';
-import Footer from './components/Footer.component';
+// import Footer from './components/Footer.component';
 import Login from './components/Login.component';
 import Signup from './components/Signup.component';
 import Profile from './pages/Profile.page';

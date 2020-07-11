@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import PlayingEleven from '../components/PlayingEleven.conmponent';
 import { makeStyles, Box, Button } from '@material-ui/core';
 import ScoreUpdater from '../components/ScoreUpdater.component';
@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Match() {
 
-    const [teamOne, setTeamOne] = useState({
+    const [teamOne] = useState({
         name: 'Bangladesh',
         captain: 'John Cina',
         status: 'batting',
@@ -35,17 +35,17 @@ function Match() {
         ]
     });
 
-    const [teamTwo, setTeamTwo] = useState({
+    const [teamTwo] = useState({
         name: 'India',
         captain: 'Koli The Wall',
         status: 'bowling',
         players: [
-            { name: 'Pathan', id: '9347' },
-            { name: 'Kohli', id: '3434' },
-            { name: 'MS Dhoni', id: '4434' },
-            { name: 'hardik Pandiya', id: '5675' },
-            { name: 'Vhuben Kumar', id: '567' },
-            { name: 'Rohit Sharma', id: '3478' }
+            { name: 'Pathan', id: '565' },
+            { name: 'Kohli', id: '57667' },
+            { name: 'MS Dhoni', id: '47546' },
+            { name: 'hardik Pandiya', id: '45656' },
+            { name: 'Vhuben Kumar', id: '545667' },
+            { name: 'Rohit Sharma', id: '4565' }
         ]
     });
 
@@ -56,6 +56,8 @@ function Match() {
     const [popup, setPopup] = useState({ title: '', status: false, type: null });
     const [popupList, setPopupList] = useState([]);
     const [nextPopup, setNextPopup] = useState(false);
+
+    const [totalScore, setTotalScore] = useState({ run: 0, wicket: 0 })
 
     const [score, setScore] = useState([]);
     const [currentBowler, setCurrentBowler] = useState({});
@@ -133,7 +135,7 @@ function Match() {
     const exchangeBatsman = (score) => {
         setCurrentBatsman(nonStriker);
         setCurrentBatsmanRun(nonStrikerRun)
-        setNonStrikerRun([...currentBatsmanRun,score]);
+        setNonStrikerRun([...currentBatsmanRun, score]);
         setNonStriker(currentBatsman);
     }
 
@@ -150,27 +152,34 @@ function Match() {
     }
 
     const updateBatsman = (score, extra) => {
-        const playerExchangeEvents = ['1','3']
+        const playerExchangeEvents = ['1', '3']
         //Check if its a extra run
         //if extra then ignore it
         if (extra) return;
 
-        if (currentOverLegalDelivery+1 === 6) {
+        if (currentOverLegalDelivery + 1 === 6) {
             bowlerPopup()
         };
 
         setCurrentBatsmanRun([...currentBatsmanRun, score]);
-        score === 'w' && batsmanPopup();
+        if (score === 'w') {
+            setTotalScore({...totalScore,wicket: totalScore.wicket + 1});
+            batsmanPopup();
+        }
 
         // exchange batsman if single
-        if(playerExchangeEvents.includes(score) && currentOverLegalDelivery+1 === 6) {
-        }else if(playerExchangeEvents.includes(score) || currentOverLegalDelivery+1 === 6){
-            exchangeBatsman(score) 
-
+        if (playerExchangeEvents.includes(score) && currentOverLegalDelivery + 1 >= 6) {
+        } else if (playerExchangeEvents.includes(score) || currentOverLegalDelivery + 1 >= 6) {
+            exchangeBatsman(score)
         }
     }
 
     const updateScore = (newScore) => {
+        const singleRun = ['wd','nb']
+        if (newScore !== 'w') {
+            newScore = singleRun.includes(newScore) ? '1' : newScore;
+            setTotalScore({...totalScore,run: totalScore.run+Number(newScore)})
+        }
         setScore([...score, newScore])
     }
 
@@ -182,10 +191,7 @@ function Match() {
         updateScore(newScore);
     }
 
-    useEffect(() => {
-        bowlerPopup();
-        setNextPopup(true);
-    }, []);
+    
 
     const batsmanPopup = () => {
         setPopup({ title: 'Select Striker', status: true, type: 'striker' });
@@ -220,9 +226,9 @@ function Match() {
 
     const callNextPopup = (type) => {
         if (type === 'bowler') {
-           return batsmanPopup();
-        }else if(type === 'striker'){
-           return nonStrikerPopup();
+            return batsmanPopup();
+        } else if (type === 'striker') {
+            return nonStrikerPopup();
         }
 
         return setNextPopup(false);
@@ -231,15 +237,25 @@ function Match() {
     const next = (obj, type) => {
         if (type === 'bowler') {
             resetCurrentBowler(obj)
-        }else if(type === 'striker'){
-            console.log(obj,type)
+        } else if (type === 'striker') {
+            console.log(obj, type)
             resetCurrentBatsman(obj)
-        }else if(type === 'non-striker'){
+        } else if (type === 'non-striker') {
             resetNonStriker(obj)
         }
         setPopup({ ...popup, status: false })
         if (nextPopup) { callNextPopup(type) }
     }
+
+    const handleBowlerPopup = useCallback(()=>{
+        setPopup({ title: 'Select Bowler', status: true, type: 'bowler' });
+        setPopupList(bowlingTeam.players);
+        setNextPopup(true);
+    },[bowlingTeam.players])
+
+    useEffect(() => {
+        handleBowlerPopup();  
+    },[handleBowlerPopup]);
 
     return (
         <div className={classes.root}>
@@ -247,10 +263,11 @@ function Match() {
                 Boidhakhi Tournamet
             </Box>
             <Box>
-                Total: 238
+                <span>{battingTeam.name}: &nbsp;</span>
+                <span>{totalScore.run}&nbsp;/&nbsp;{totalScore.wicket}</span>
             </Box>
             <Box display="flex" flexGrow={1} mt={2}>
-                <PlayingEleven team={teamOne} />
+                <PlayingEleven team={teamOne} active={currentBatsman.id}/>
                 <PlayerScore player={player} />
                 <Box flexGrow={1} >
                     <Box display="flex" flexDirection="row" justifyContent="space-between">
@@ -263,7 +280,7 @@ function Match() {
                 </Box>
                 <Box flexGrow={1}></Box>
                 <PlayerScore player={playerBowler} />
-                <PlayingEleven team={teamTwo} />
+                <PlayingEleven team={teamTwo} active={currentBowler.id}/>
             </Box>
             <Box display="flex" mt={4} >
                 <span>Highlight:&nbsp;</span>

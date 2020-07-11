@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
-import { CardContent, Typography, makeStyles, Card } from '@material-ui/core';
+import React from 'react'
+import { makeStyles, List, ListItem, Paper, Badge } from '@material-ui/core';
 
 
 
-const useStyles = makeStyles((theme)=>({
+const useStyles = makeStyles((theme) => ({
     root: {
-        
+
     },
     teamName: {
         fontSize: 20,
@@ -20,24 +20,26 @@ const useStyles = makeStyles((theme)=>({
     }
 }))
 
-function PlayingEleven({ team }) {
+function PlayingEleven({ team, active}) {
 
-    const status = useState({});
     const classes = useStyles();
+    // console.log(active)
 
     return (
-        <Card>
-            <CardContent>
-                <Typography className={classes.teamName}>
-                    {team.name} 
+        <Paper>
+            <List>
+                <ListItem className={classes.teamName}>
+                    {team.name}
                     <span className={classes.status}>{team.status}</span>
-                </Typography>
-               {team.players.map((pl)=> 
-               <Typography key={pl.id}>
-                    {pl.name}
-                </Typography>)}
-            </CardContent>
-        </Card>
+                </ListItem>
+                {team.players.map((pl) =>
+                    <ListItem key={pl.id}>
+                        <Badge color="secondary" variant="dot" invisible={pl.id !== active} >
+                            {pl.name}
+                        </Badge>
+                    </ListItem>)}
+            </List>
+        </Paper>
     )
 }
 

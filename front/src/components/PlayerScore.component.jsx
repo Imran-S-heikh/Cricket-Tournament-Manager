@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, CardContent, Divider, Box, makeStyles } from '@material-ui/core';
+import { v4 as uniqId } from 'uuid';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -26,9 +27,9 @@ function PlayerScore({ player }) {
                 <Box py="4px" fontWeight="bold">{player.name}</Box>
                 <Divider />
                 {player.score.map(el =>
-                    <Box mt={1}>
+                    <Box mt={1} key={uniqId()}>
                         {el.map(value =>
-                            <span>
+                            <span key={uniqId()}>
                                 <span className={classes[value]}>{value}</span>
                                 &nbsp; + &nbsp;
                             </span>)}

@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { Box, makeStyles, Grid, Paper, BottomNavigation, BottomNavigationAction} from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
 import PersonIcon from '@material-ui/icons/Person';
 import FaceIcon from '@material-ui/icons/Face';
 import SportsBaseballIcon from '@material-ui/icons/SportsBaseball';
@@ -72,10 +71,8 @@ const useStyles = makeStyles(() => ({
 }))
 
 function Profile() {
-    const [open, setOpen] = useState(true);
     const [value, setValue] = useState('info')
     const classes = useStyles();
-    const history = useHistory();
 
     return (
         <Paper className={classes.root}>

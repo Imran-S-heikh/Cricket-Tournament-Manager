@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { AppBar, Toolbar, Button, IconButton, Typography, makeStyles, Drawer, Box, Divider, List, ListItem, ListItemText } from '@material-ui/core';
+import React from 'react'
+import { IconButton, makeStyles, Drawer, Box, Divider, List, ListItem, ListItemText } from '@material-ui/core';
 import ChevronLeftRoundedIcon from '@material-ui/icons/ChevronLeftRounded';
 import PersonIcon from '@material-ui/icons/Person';
 import { useHistory } from 'react-router-dom';
@@ -68,7 +68,7 @@ function Sidebar({ toggle, drawer }) {
                             <ListItemText primary="Matches" onClick={()=>handleClick('/matches')}/>
                         </ListItem>
                         <ListItem button>
-                            <ListItemText primary="Cibtril" button />
+                            <ListItemText primary="Cibtril" />
                         </ListItem>
                     </List>
                 </Box>
