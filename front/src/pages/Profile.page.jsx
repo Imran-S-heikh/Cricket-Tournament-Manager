@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
-import { Drawer, Box, IconButton, makeStyles, Grid, Paper, BottomNavigation, BottomNavigationAction, List, ListItem, ListItemText, ListItemAvatar, Avatar } from '@material-ui/core';
-import Close from '../components/Close.component';
+import { Box, makeStyles, Grid, Paper, BottomNavigation, BottomNavigationAction} from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import PersonIcon from '@material-ui/icons/Person';
 import FaceIcon from '@material-ui/icons/Face';

@@ -1,7 +1,6 @@
 import React from 'react'
-import { Container, Box, makeStyles, FormControl, InputLabel, Input, TextField, Paper, Button } from '@material-ui/core';
+import {  Box, TextField, Paper, Button } from '@material-ui/core';
 import { SignupStyle } from './Login.component'
-import BG from '../assets/images/cricket.jpeg';
 
 function Signup() {
     const classes = SignupStyle();

@@ -6,8 +6,6 @@ const useStyles = makeStyles(()=>({
         position: 'relative',
         width: 'max-content'
     },
-    // title: {
-    // },
     teamName: {
         padding: '5px',
         backgroundColor: 'gray',

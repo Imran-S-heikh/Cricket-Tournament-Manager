@@ -1,10 +1,13 @@
 import React from 'react'
-import MatchCard from '../components/MatchCard.component'
+import MatchCard from '../components/MatchCard.component';
+import { Link } from 'react-router-dom';
 
 function Matches() {
     return (
         <div>
-            <MatchCard/>
+            <Link to="/match/39">
+                <MatchCard/>
+            </Link>
         </div>
     )
 }
