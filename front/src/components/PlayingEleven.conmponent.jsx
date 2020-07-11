@@ -33,8 +33,8 @@ function PlayingEleven({ team }) {
                     <span className={classes.status}>{team.status}</span>
                 </Typography>
                {team.players.map((pl)=> 
-               <Typography>
-                    {pl}
+               <Typography key={pl.id}>
+                    {pl.name}
                 </Typography>)}
             </CardContent>
         </Card>

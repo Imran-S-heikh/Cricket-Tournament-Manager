@@ -1,36 +1,31 @@
 import React, { useState } from 'react'
 import { Dialog, DialogTitle, List, ListItem, ListItemText, ListItemAvatar, Avatar } from '@material-ui/core';
 
-function Popup({ open, handleClose }) {
-    const [selectedIndex, setSelectedIndex] = useState(null);
+function Popup({ popup,players, next }) {
+    const [lastBowler, setLastBowler] = useState(null);
+    const [outBatsman,setOutBatsman] = useState([]);
 
-    const handleClick = (event, index) => {
-        setSelectedIndex(index)
-        console.log(event, index);
+    const handleClick = ({currentTarget: {id,textContent}}) => {
+        popup.batsman ? setOutBatsman([...outBatsman,id]) : setLastBowler(id);
+        next({ name: textContent, id },popup.batsman);  
     }
 
     return (
-        <Dialog onClose={handleClose} open={open} >
-            <DialogTitle>Its an Over!</DialogTitle>
+        <Dialog open={popup.status}>
+            <DialogTitle>{popup.title}</DialogTitle>
             <List>
-                <ListItem button disabled selected={selectedIndex === 1} onClick={(event) => handleClick(event, 1)}>
-                    <ListItemAvatar>
-                        <Avatar/>
-                    </ListItemAvatar>
-                    <ListItemText primary="Rahim Shiwekh" />
-                </ListItem>
-                <ListItem button selected={selectedIndex === 2} onClick={(event) => handleClick(event, 2)}>
-                    <ListItemAvatar>
-                        <Avatar/>
-                    </ListItemAvatar>
-                    <ListItemText primary="imran Iqbal" />
-                </ListItem>
-                <ListItem button selected={selectedIndex === 3} onClick={(event) => handleClick(event, 3)}>
-                    <ListItemAvatar>
-                        <Avatar/>
-                    </ListItemAvatar>
-                    <ListItemText primary="sadi Shiwekh" />
-                </ListItem>
+                {players.map((player) => {
+                    const disabled = popup.batsman ? outBatsman.includes(player.id) : lastBowler == player.id;
+
+                    return (
+                        <ListItem key={player.id} id={player.id} button disabled={disabled} onClick={(event) => handleClick(event, player.id)}>
+                            <ListItemAvatar>
+                                <Avatar />
+                            </ListItemAvatar>
+                            <ListItemText primary={player.name} />
+                        </ListItem>
+                    )
+                })}
             </List>
         </Dialog>
     )

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import PlayingEleven from '../components/PlayingEleven.conmponent';
-import { makeStyles, Box, Button, Card, CardContent } from '@material-ui/core';
+import { makeStyles, Box, Button } from '@material-ui/core';
 import ScoreUpdater from '../components/ScoreUpdater.component';
 import { useState } from 'react';
 import PlayerScore from '../components/PlayerScore.component';
@@ -21,24 +21,17 @@ const useStyles = makeStyles((theme) => ({
 
 function Match() {
 
-    const classes = useStyles();
-    const teams = ['37884', '34839']
-    const [battingTeam, setBattingTeam] = useState(teams[0]);
-    const [bowlingTeam, setBowlingTeam] = useState(teams[1]);
-    const [popup,setPopup] = useState(false);
-
-
     const [teamOne, setTeamOne] = useState({
         name: 'Bangladesh',
         captain: 'John Cina',
         status: 'batting',
         players: [
-            'Tamim Iqbal',
-            'Shakib Al Hansan',
-            'Saif The Boss',
-            'Liton The Perfect Timer',
-            'Soumya The Huge',
-            'Musi The Dependable'
+            {name:'Tamim Iqbal',id: '9347'},
+            {name:'Shakib Al Hansan',id: '3434'},
+            {name:'Saif The Boss',id: '4434'},
+            {name:'Liton The Perfect Timer',id: '5675'},
+            {name:'Soumya The Huge',id: '567'},
+            {name:'Musi The Dependable',id: '3478'}
         ]
     });
 
@@ -47,31 +40,38 @@ function Match() {
         captain: 'Koli The Wall',
         status: 'bowling',
         players: [
-            'Yousuf',
-            'Yadav',
-            'Rhoit Sharma',
-            'Menk',
-            'Pandiya',
-            'Dilip'
+            {name:'Pathan',id: '9347'},
+            {name:'Kohli',id: '3434'},
+            {name:'MS Dhoni',id: '4434'},
+            {name:'hardik Pandiya',id: '5675'},
+            {name:'Vhuben Kumar',id: '567'},
+            {name:'Rohit Sharma',id: '3478'}
         ]
     });
 
+    const classes = useStyles();
+    const teams = [teamOne, teamTwo];
+    const [battingTeam, setBattingTeam] = useState(teams[0]);
+    const [bowlingTeam, setBowlingTeam] = useState(teams[1]);
+    const [popup,setPopup] = useState({title: '', status: false, batsman: true});
+    const [popupList,setPopupList] = useState([]);
+    const [nextPopup,setNextPopup] = useState(false);
+
     const [score,setScore] = useState([]);
-    const [currentBowler,setCurrentBowler] = useState({name: 'Imran',id: '6348774'});
+    const [currentBowler,setCurrentBowler] = useState({});
     const [currentOver,setCurrentOver] = useState([]);
     const [currentOverLegalDelivery,setCurrentOverLegalDelivery] = useState(0);
 
-    const [currentBatsman,setCurrentBatsman] = useState(null);
+    const [currentBatsman,setCurrentBatsman] = useState({});
     const [currentBatsmanRun,setCurrentBatsmanRun] = useState([]);
 
 
-    const [player,setPlayer] = useState({
-        name: 'Iqbal Khan',
+    const player = {
+        name: currentBatsman.name,
         score: [
-            [0,1,4],
-            [0]
+            currentBatsmanRun
         ]
-    });
+    };
 
     const playerBowler = {
         ...currentBowler,
@@ -142,6 +142,7 @@ function Match() {
         if(extra) return;
         
         setCurrentBatsmanRun([...currentBatsmanRun,score]);
+        score == 'w' && batsmanPopup();
     }
 
     const updateScore = (newScore) => {
@@ -149,7 +150,7 @@ function Match() {
     }
 
     const handleUpdate = (event,extra = false) => {
-        if(currentOverLegalDelivery >= 6)return setPopup(true);
+        if(currentOverLegalDelivery >= 6)return bowlerPopup();
 
         const newScore = event.currentTarget.getAttribute('data-score');
 
@@ -160,12 +161,39 @@ function Match() {
         console.log('delivery: ',currentOverLegalDelivery,'over:',currentOver)
     }
 
-    const openPopup = () => {
-        
+    useEffect(()=>{
+        bowlerPopup();
+        setNextPopup(true);
+    },[]);
+
+    const batsmanPopup = ()=>{
+        setPopup({title: 'Select Batsman',status: true, batsman: true});
+        setPopupList(battingTeam.players);
     }
 
-    const handleClose = () => {
-        setPopup(false);
+    const bowlerPopup = ()=>{
+        setPopup({title: 'Select Bowler',status: true, batsman: false});
+        setPopupList(bowlingTeam.players);
+    }
+
+    const resetCurrentBowler = (obj) => {
+        setCurrentBowler(obj);
+        setCurrentOver([]);
+        setCurrentOverLegalDelivery(0);
+    }
+
+    const resetCurrentBatsman = (obj) => {
+        setCurrentBatsman(obj);
+        setCurrentBatsmanRun([]);
+    }
+
+    const next = (obj,batsman = false) => {
+        batsman ? resetCurrentBatsman(obj) : resetCurrentBowler(obj);
+        setPopup({...popup,status: false})
+        if(nextPopup){
+            setNextPopup(false);
+            batsmanPopup();
+        }
     }
 
     return (
@@ -193,13 +221,13 @@ function Match() {
                 <PlayingEleven team={teamTwo} />
             </Box>
             <Box display="flex" mt={4} >
-                <span>Highlight: &nbsp;</span>
+                <span>Highlight:&nbsp;</span>
                 <Highlight score={score}/>
             </Box>
             <Box className={classes.scoreUpdater}>
                 <ScoreUpdater updates={scoreUpdates} handler={handleUpdate} size="large" />
             </Box>
-            <Popup open={popup} handleClose={handleClose}/>
+            <Popup popup={popup} players={popupList} next={next}/>
         </div>
     )
 }
