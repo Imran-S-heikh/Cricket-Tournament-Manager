@@ -26,12 +26,12 @@ function Match() {
         captain: 'John Cina',
         status: 'batting',
         players: [
-            {name:'Tamim Iqbal',id: '9347'},
-            {name:'Shakib Al Hansan',id: '3434'},
-            {name:'Saif The Boss',id: '4434'},
-            {name:'Liton The Perfect Timer',id: '5675'},
-            {name:'Soumya The Huge',id: '567'},
-            {name:'Musi The Dependable',id: '3478'}
+            { name: 'Tamim Iqbal', id: '9347' },
+            { name: 'Shakib Al Hansan', id: '3434' },
+            { name: 'Saif The Boss', id: '4434' },
+            { name: 'Liton The Perfect Timer', id: '5675' },
+            { name: 'Soumya The Huge', id: '567' },
+            { name: 'Musi The Dependable', id: '3478' }
         ]
     });
 
@@ -40,12 +40,12 @@ function Match() {
         captain: 'Koli The Wall',
         status: 'bowling',
         players: [
-            {name:'Pathan',id: '9347'},
-            {name:'Kohli',id: '3434'},
-            {name:'MS Dhoni',id: '4434'},
-            {name:'hardik Pandiya',id: '5675'},
-            {name:'Vhuben Kumar',id: '567'},
-            {name:'Rohit Sharma',id: '3478'}
+            { name: 'Pathan', id: '9347' },
+            { name: 'Kohli', id: '3434' },
+            { name: 'MS Dhoni', id: '4434' },
+            { name: 'hardik Pandiya', id: '5675' },
+            { name: 'Vhuben Kumar', id: '567' },
+            { name: 'Rohit Sharma', id: '3478' }
         ]
     });
 
@@ -53,17 +53,19 @@ function Match() {
     const teams = [teamOne, teamTwo];
     const [battingTeam, setBattingTeam] = useState(teams[0]);
     const [bowlingTeam, setBowlingTeam] = useState(teams[1]);
-    const [popup,setPopup] = useState({title: '', status: false, batsman: true});
-    const [popupList,setPopupList] = useState([]);
-    const [nextPopup,setNextPopup] = useState(false);
+    const [popup, setPopup] = useState({ title: '', status: false, type: null });
+    const [popupList, setPopupList] = useState([]);
+    const [nextPopup, setNextPopup] = useState(false);
 
-    const [score,setScore] = useState([]);
-    const [currentBowler,setCurrentBowler] = useState({});
-    const [currentOver,setCurrentOver] = useState([]);
-    const [currentOverLegalDelivery,setCurrentOverLegalDelivery] = useState(0);
+    const [score, setScore] = useState([]);
+    const [currentBowler, setCurrentBowler] = useState({});
+    const [currentOver, setCurrentOver] = useState([]);
+    const [currentOverLegalDelivery, setCurrentOverLegalDelivery] = useState(0);
 
-    const [currentBatsman,setCurrentBatsman] = useState({});
-    const [currentBatsmanRun,setCurrentBatsmanRun] = useState([]);
+    const [currentBatsman, setCurrentBatsman] = useState({});
+    const [currentBatsmanRun, setCurrentBatsmanRun] = useState([]);
+    const [nonStriker, setNonStriker] = useState({});
+    const [nonStrikerRun, setNonStrikerRun] = useState([]);
 
 
     const player = {
@@ -94,6 +96,10 @@ function Match() {
         {
             type: 2,
             value: 2
+        },
+        {
+            type: 3,
+            value: 3
         }
     ];
     const scoreUpdatesExtra = [
@@ -124,55 +130,75 @@ function Match() {
         setBowlingTeam(battingTeam);
     }
 
-    const updateBowler = (score) =>{
-        //Check if its a legal delivery
-        const legalDeliveries = ['0','1','2','3','4','w'];
-        const isLegal = legalDeliveries.includes(score);
-        //if its lagal then set lagal delivery
-        isLegal && setCurrentOverLegalDelivery(currentOverLegalDelivery+1);
-
-        //Update current Over
-        setCurrentOver([...currentOver,score]);
-        
+    const exchangeBatsman = (score) => {
+        setCurrentBatsman(nonStriker);
+        setCurrentBatsmanRun(nonStrikerRun)
+        setNonStrikerRun([...currentBatsmanRun,score]);
+        setNonStriker(currentBatsman);
     }
 
-    const updateBatsman = (score,extra) => {
+    const updateBowler = (score) => {
+        //Check if its a legal delivery
+        const legalDeliveries = ['0', '1', '2', '3', '4', 'w'];
+        const isLegal = legalDeliveries.includes(score);
+        //if its lagal then set lagal delivery
+        isLegal && setCurrentOverLegalDelivery(currentOverLegalDelivery + 1);
+
+        //Update current Over
+        setCurrentOver([...currentOver, score]);
+
+    }
+
+    const updateBatsman = (score, extra) => {
+        const playerExchangeEvents = ['1','3']
         //Check if its a extra run
         //if extra then ignore it
-        if(extra) return;
-        
-        setCurrentBatsmanRun([...currentBatsmanRun,score]);
-        score == 'w' && batsmanPopup();
+        if (extra) return;
+
+        if (currentOverLegalDelivery+1 === 6) {
+            bowlerPopup()
+        };
+
+        setCurrentBatsmanRun([...currentBatsmanRun, score]);
+        score === 'w' && batsmanPopup();
+
+        // exchange batsman if single
+        if(playerExchangeEvents.includes(score) && currentOverLegalDelivery+1 === 6) {
+        }else if(playerExchangeEvents.includes(score) || currentOverLegalDelivery+1 === 6){
+            exchangeBatsman(score) 
+
+        }
     }
 
     const updateScore = (newScore) => {
-        setScore([...score,newScore])
+        setScore([...score, newScore])
     }
 
-    const handleUpdate = (event,extra = false) => {
-        if(currentOverLegalDelivery >= 6)return bowlerPopup();
-
+    const handleUpdate = (event, extra = false) => {
         const newScore = event.currentTarget.getAttribute('data-score');
 
         updateBowler(newScore);
-        updateBatsman(newScore,extra);
+        updateBatsman(newScore, extra);
         updateScore(newScore);
-
-        console.log('delivery: ',currentOverLegalDelivery,'over:',currentOver)
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         bowlerPopup();
         setNextPopup(true);
-    },[]);
+    }, []);
 
-    const batsmanPopup = ()=>{
-        setPopup({title: 'Select Batsman',status: true, batsman: true});
+    const batsmanPopup = () => {
+        setPopup({ title: 'Select Striker', status: true, type: 'striker' });
         setPopupList(battingTeam.players);
     }
 
-    const bowlerPopup = ()=>{
-        setPopup({title: 'Select Bowler',status: true, batsman: false});
+    const nonStrikerPopup = () => {
+        setPopup({ title: 'Select Non-Striker', status: true, type: 'non-striker' });
+        setPopupList(battingTeam.players);
+    }
+
+    const bowlerPopup = () => {
+        setPopup({ title: 'Select Bowler', status: true, type: 'bowler' });
         setPopupList(bowlingTeam.players);
     }
 
@@ -187,13 +213,32 @@ function Match() {
         setCurrentBatsmanRun([]);
     }
 
-    const next = (obj,batsman = false) => {
-        batsman ? resetCurrentBatsman(obj) : resetCurrentBowler(obj);
-        setPopup({...popup,status: false})
-        if(nextPopup){
-            setNextPopup(false);
-            batsmanPopup();
+    const resetNonStriker = (obj) => {
+        setNonStriker(obj);
+        setNonStrikerRun([]);
+    }
+
+    const callNextPopup = (type) => {
+        if (type === 'bowler') {
+           return batsmanPopup();
+        }else if(type === 'striker'){
+           return nonStrikerPopup();
         }
+
+        return setNextPopup(false);
+    }
+
+    const next = (obj, type) => {
+        if (type === 'bowler') {
+            resetCurrentBowler(obj)
+        }else if(type === 'striker'){
+            console.log(obj,type)
+            resetCurrentBatsman(obj)
+        }else if(type === 'non-striker'){
+            resetNonStriker(obj)
+        }
+        setPopup({ ...popup, status: false })
+        if (nextPopup) { callNextPopup(type) }
     }
 
     return (
@@ -206,28 +251,28 @@ function Match() {
             </Box>
             <Box display="flex" flexGrow={1} mt={2}>
                 <PlayingEleven team={teamOne} />
-                <PlayerScore player={player}/>
+                <PlayerScore player={player} />
                 <Box flexGrow={1} >
                     <Box display="flex" flexDirection="row" justifyContent="space-between">
                         <Box display="flex" flexDirection="column">
                             <Box component="span" textAlign="center">Extra</Box>
-                            <ScoreUpdater handler={(e)=>{handleUpdate(e,true)}} updates={scoreUpdatesExtra} />
+                            <ScoreUpdater handler={(e) => { handleUpdate(e, true) }} updates={scoreUpdatesExtra} />
                             <Button onClick={endOfInnings}>End of Innings</Button>
                         </Box>
                     </Box>
                 </Box>
                 <Box flexGrow={1}></Box>
-                <PlayerScore player={playerBowler}/>
+                <PlayerScore player={playerBowler} />
                 <PlayingEleven team={teamTwo} />
             </Box>
             <Box display="flex" mt={4} >
                 <span>Highlight:&nbsp;</span>
-                <Highlight score={score}/>
+                <Highlight score={score} />
             </Box>
             <Box className={classes.scoreUpdater}>
                 <ScoreUpdater updates={scoreUpdates} handler={handleUpdate} size="large" />
             </Box>
-            <Popup popup={popup} players={popupList} next={next}/>
+            <Popup popup={popup} players={popupList} next={next} />
         </div>
     )
 }

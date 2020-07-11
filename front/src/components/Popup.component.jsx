@@ -6,8 +6,12 @@ function Popup({ popup,players, next }) {
     const [outBatsman,setOutBatsman] = useState([]);
 
     const handleClick = ({currentTarget: {id,textContent}}) => {
-        popup.batsman ? setOutBatsman([...outBatsman,id]) : setLastBowler(id);
-        next({ name: textContent, id },popup.batsman);  
+        checkBatsman(popup.type) ? setOutBatsman([...outBatsman,id]) : setLastBowler(id);
+        next({ name: textContent, id },popup.type);  
+    }
+
+    const checkBatsman = (type) => {
+        return type == 'striker' || type == 'non-striker'
     }
 
     return (
@@ -15,7 +19,7 @@ function Popup({ popup,players, next }) {
             <DialogTitle>{popup.title}</DialogTitle>
             <List>
                 {players.map((player) => {
-                    const disabled = popup.batsman ? outBatsman.includes(player.id) : lastBowler == player.id;
+                    const disabled = checkBatsman(popup.type) ? outBatsman.includes(player.id) : lastBowler == player.id;
 
                     return (
                         <ListItem key={player.id} id={player.id} button disabled={disabled} onClick={(event) => handleClick(event, player.id)}>
