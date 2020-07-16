@@ -26,20 +26,19 @@ function PlayerScore({ player }) {
             <CardContent>
                 <Box py="4px" fontWeight="bold">{player.name}</Box>
                 <Divider />
-                {player.score.map(el =>
-                    <Box mt={1} key={uniqId()}>
-                        {el.map(value =>
-                            <span key={uniqId()}>
-                                <span className={classes[value]}>{value}</span>
+                <Box mt={1} key={uniqId()}>
+                    {player.score.map(value =>
+                        <span key={uniqId()}>
+                            <span className={classes[value]}>{value}</span>
                                 &nbsp; + &nbsp;
-                            </span>)}
-                        <Divider/>
-                    </Box>
-                )}
+                        </span>
+                    )}
+                    <Divider />
+                </Box>
             </CardContent>
         </Card>
     )
 }
 
 export default PlayerScore;
-export {useStyles};
+export { useStyles };

@@ -3,11 +3,14 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import { RecoilRoot } from 'recoil';
 
 ReactDOM.render(
-  <React.Fragment>
-    <App />
-  </React.Fragment>,
+  <React.StrictMode>
+    <RecoilRoot>
+      <App />
+    </RecoilRoot>
+  </React.StrictMode>,
   document.getElementById('root')
 );
 

@@ -11,8 +11,8 @@ import Header from './components/Header.component';
 import Login from './components/Login.component';
 import Signup from './components/Signup.component';
 import Profile from './pages/Profile.page';
+import Match from './pages/match/Match.page';
 import Matches from './pages/Matches.page';
-import Match from './pages/Match.page';
 
 function App() {
   return (
@@ -29,7 +29,7 @@ function App() {
           <Profile />
         </Route>
          <Route path="/matches" exact>
-          <Matches />
+          <Matches/>
         </Route>
         <Route path="/match/:id" exact>
           <Match />

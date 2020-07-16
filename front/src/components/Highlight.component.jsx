@@ -1,10 +1,13 @@
 import React from 'react';
 import { useStyles as scoreColor } from './PlayerScore.component';
 import { v4 as uniqId } from 'uuid';
+import { useRecoilValue } from 'recoil';
+import { scoreState } from '../pages/match/match.atom';
 
-function Highlight({ score }) {
+function Highlight() {
     const classes = scoreColor();
-    
+    const score = useRecoilValue(scoreState);
+
     return (
         <div>
             {
@@ -13,7 +16,7 @@ function Highlight({ score }) {
                         <span className={classes[value]}>{value}</span>
                         &nbsp; + &nbsp;
                     </span>
-            )}
+                )}
         </div>
     )
 }

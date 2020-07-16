@@ -55,7 +55,8 @@ const matchSchema = new mongoose.Schema({
         enum: ['running','finished','stopped']
     },
     tossWonTeam: matchTeamSchema,
-    tossLoseTeam: matchTeamSchema
+    tossLoseTeam: matchTeamSchema,
+    score: [String]
 });
 
 const Match = mongoose.model('Match', matchSchema);
