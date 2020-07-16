@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Dialog, DialogTitle, List, ListItem, ListItemText, ListItemAvatar, Avatar } from '@material-ui/core';
+import { Dialog, DialogTitle, List, ListItem, ListItemText, ListItemAvatar, Avatar, Zoom } from '@material-ui/core';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { popupOpenState, popupState,teamOneState,teamTwoState,currentBattingTeamState } from '../pages/match/match.atom';
+import { popupOpenState, popupState, teamOneState, teamTwoState, currentBattingTeamState } from '../pages/match/match.atom';
 
 
 function Popup({ next }) {
@@ -30,29 +30,28 @@ function Popup({ next }) {
         callPopup(initialPopups());
     }, [])
 
-    const initialPopups = ()=>{
+    const initialPopups = () => {
         return {
             bowler: {
                 title: 'Select a Bowler',
-                players: battingTeam === 'teamOne' ? teamTwo['players']  : teamOne['players'],
+                players: battingTeam === 'teamOne' ? teamTwo['players'] : teamOne['players'],
                 type: 'bowler'
             },
             striker: {
                 title: 'Select a Striker Batsman',
                 players: battingTeam === 'teamOne' ? teamOne['players'] : teamTwo['players'],
-                type: 'striker' 
+                type: 'striker'
             },
             nonStriker: {
                 title: 'Select a Non-Striker Batsman',
                 players: battingTeam === 'teamOne' ? teamOne['players'] : teamTwo['players'],
-                type: 'non-striker' 
+                type: 'non-striker'
             }
         }
     }
 
     const handleClick = ({ currentTarget: { id, textContent } }) => {
         checkBatsman(popup.type) ? setOutBatsman([...outBatsman, id]) : setLastBowler(id);
-        console.log(next)
         next({ name: textContent, id }, popup.type);
         if (nextPopup && Object.keys(poroxyPopups).length > 0) {
             callPopup(poroxyPopups);

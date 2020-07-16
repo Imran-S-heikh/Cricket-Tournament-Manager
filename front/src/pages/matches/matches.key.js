@@ -1,0 +1,1 @@
+export const ALL_MATCHES_STATE = 'ALL_MATCHES_STATE';

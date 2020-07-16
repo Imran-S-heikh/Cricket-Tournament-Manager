@@ -67,7 +67,6 @@ function ScoreUpdater({updates,size,extra = false}) {
         }
 
         // exchange batsman if single
-        console.log(currentBowler.legalDeliviries,'currentBowler.legalDeliveries')
         if (playerExchangeEvents.includes(newScore) && currentBowler.legalDeliviries + 1 >= 6) {
         } else if (playerExchangeEvents.includes(newScore) || currentBowler.legalDeliviries + 1 >= 6) {
             exchangeBatsman(newScore);
@@ -75,7 +74,6 @@ function ScoreUpdater({updates,size,extra = false}) {
     }
 
     const updateBowler = (newScore) => {
-        console.log(currentBowler.legalDeliviries)
         if (currentBowler.legalDeliviries + 1 >= 6) {
             setPopup({title: 'Select a Bowler',players: teams[bowlingTeam].players,type: 'bowler'})
             setPopupOpen(true);

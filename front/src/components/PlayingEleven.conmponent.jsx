@@ -23,7 +23,6 @@ const useStyles = makeStyles((theme) => ({
 function PlayingEleven({ team, active}) {
 
     const classes = useStyles();
-    // console.log(active)
 
     return (
         <Paper>

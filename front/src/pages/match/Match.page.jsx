@@ -85,7 +85,6 @@ function Match() {
     }
 
     const resetCurrentBatsman = (obj) => {
-        console.log(obj,'reset')
         setCurrentBatsman({...currentBatsman,striker: {...obj,score: []}});
     }
 
@@ -94,7 +93,6 @@ function Match() {
     }
 
     const next = (obj, type) => {
-        console.log(obj, type)
         if (type === 'bowler') {
             resetCurrentBowler(obj)
         } else if (type === 'striker') {

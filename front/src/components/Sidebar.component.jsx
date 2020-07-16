@@ -2,7 +2,9 @@ import React from 'react'
 import { IconButton, makeStyles, Drawer, Box, Divider, List, ListItem, ListItemText } from '@material-ui/core';
 import ChevronLeftRoundedIcon from '@material-ui/icons/ChevronLeftRounded';
 import PersonIcon from '@material-ui/icons/Person';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Redirect } from 'react-router-dom';
+import { useRecoilValue } from 'recoil'
+import { currentUserState } from '../recoil/atoms';
 
 const useStyles = makeStyles((theme) => ({
     drawer: {
@@ -36,14 +38,19 @@ const useStyles = makeStyles((theme) => ({
 
 }))
 function Sidebar({ toggle, drawer }) {
+    const currentUser = useRecoilValue(currentUserState);
     const classes = useStyles();
     const history = useHistory();
 
-    const handleClick = (path)=>{
+    const handleClick = (path) => {
         toggle();
         history.push(path);
     }
 
+    if (!currentUser) {
+        history.push('/')
+        return null
+    }
 
     return (
         <div>
@@ -55,17 +62,17 @@ function Sidebar({ toggle, drawer }) {
                     <Box mt={2}>
                         <PersonIcon fontSize="large" />
                     </Box>
-                    <span className={classes.name}>Imran Sheikh</span>
-                    <span className={classes.status}>Free-agent</span>
+                    <span className={classes.name}>{currentUser.name}</span>
+                    <span className={classes.status}>{currentUser.status}</span>
                 </Box>
                 <Divider light className={classes.divider} />
                 <Box className={classes.drawerContent}>
                     <List>
-                        <ListItem button onClick={()=>handleClick('/profile')}>
+                        <ListItem button onClick={() => handleClick('/profile')}>
                             <ListItemText primary="Profile" />
                         </ListItem>
                         <ListItem button>
-                            <ListItemText primary="Matches" onClick={()=>handleClick('/matches')}/>
+                            <ListItemText primary="Matches" onClick={() => handleClick('/matches')} />
                         </ListItem>
                         <ListItem button>
                             <ListItemText primary="Cibtril" />

@@ -1,7 +1,10 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, Redirect } from 'react-router-dom';
 import { Box, makeStyles, TextField, Paper, Button } from '@material-ui/core';
-import BG from '../assets/images/cricket.jpeg';
+import BG from '../../assets/images/cricket.jpeg';
+import { useRecoilState } from 'recoil';
+import { currentUserState } from '../../recoil/atoms';
+import { requestLogin } from './login.api';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -58,6 +61,18 @@ const useStyles = makeStyles((theme) => ({
 
 function Login() {
     const classes = useStyles();
+    const [email,setEmail] = useState('imran@gmail.com');
+    const [password,setPassword] = useState('12345678');
+    const [currentUser,setCurrentUser] = useRecoilState(currentUserState);
+    if(currentUser) return <Redirect to="/home"/>
+
+    const handleSubmit = ()=> {
+        requestLogin({email,password}).then(res=>{
+            setCurrentUser(res.data.player)
+        }).catch(err=>{
+            console.log(err)
+        })
+    }
 
     return (
         <div className={classes.root}>
@@ -65,11 +80,19 @@ function Login() {
             <Paper className={classes.paper} elevation={3}>
                 <h1>Player Lgin</h1>
                 <form className={classes.form}>
-                    <TextField id="email" label="Email" size="small" type="email" />
-                    <TextField id="password" label="Password" size="small" type="password" />
+                    <TextField value={email} id="email" 
+                        onChange={e=>setEmail(e.currentTarget.value)} 
+                        label="Email" size="small" 
+                        type="email" 
+                    />
+                    <TextField value={password} id="password"
+                        onChange={e=>setPassword(e.currentTarget.value)} 
+                        label="Password" size="small" 
+                        type="password" 
+                    />
                 </form>
                 <Box mt={2}>
-                    <Button variant="contained" color="primary" fullWidth>Submit</Button>
+                    <Button onClick={handleSubmit} variant="contained" color="primary" fullWidth>Submit</Button>
                 </Box>
                 <Box component="div" className={classes.createLink}>
                     Don't have an account,

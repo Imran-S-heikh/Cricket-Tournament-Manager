@@ -7,6 +7,8 @@ import { ReactComponent as Bat } from '../assets/svg/cricket-bat.svg';
 import Batting from '../components/Batting.component';
 import Info from '../components/Info.component';
 import Bowling from '../components/Bowling.component';
+import { useRecoilValue } from 'recoil';
+import { currentUserState } from '../recoil/atoms';
 
 const drawerWidth = '100%';
 
@@ -73,6 +75,7 @@ const useStyles = makeStyles(() => ({
 function Profile() {
     const [value, setValue] = useState('info')
     const classes = useStyles();
+    const currentUser = useRecoilValue(currentUserState);
 
     return (
         <Paper className={classes.root}>
