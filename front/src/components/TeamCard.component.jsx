@@ -1,6 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Card, CardActions, Button, CardContent, Typography, makeStyles, Divider, Box } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add';
+import DoneRoundedIcon from '@material-ui/icons/DoneRounded';
+import { useRecoilValue } from 'recoil';
+import { currentUserState } from '../recoil/atoms';
+import Axios from 'axios';
+import { useEffect } from 'react';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -25,6 +30,33 @@ const useStyles = makeStyles((theme) => ({
 
 function TeamCard({ team }) {
     const classes = useStyles();
+    const currentPlayer = useRecoilValue(currentUserState);
+    const [join, setJoin] = useState(false);
+    const [message,setMessage] = useState('Request Pending');
+
+    useEffect(()=>{
+        if (currentPlayer) {
+            team.players.map(el=>{
+                if (el.player === currentPlayer._id) {
+                    setJoin(true);
+                    el.status === 'approved' && setMessage('Current Team')
+                }
+            })
+        }
+    },[])
+
+    const handleClick = () => {
+        Axios({
+            method: 'POST',
+            url: `api/v1/players/join/${team._id}`
+        }).then(res=>{
+            setJoin(true);
+            console.log(res)
+        }).catch(err=>{
+            console.log(err)
+        })
+    }
+
     return (
         <Card className={classes.root}>
             <CardContent>
@@ -48,9 +80,14 @@ function TeamCard({ team }) {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button variant="contained" startIcon={<AddIcon />} fullWidth>
-                    Join Team
-                </Button>
+                {join ?
+                    <Button variant="contained" startIcon={<DoneRoundedIcon />} fullWidth>
+                        {message}
+                    </Button> :
+                    <Button onClick={handleClick} variant="contained" startIcon={<AddIcon />} fullWidth>
+                        Join Team
+                    </Button>
+                }
             </CardActions>
         </Card>
     )

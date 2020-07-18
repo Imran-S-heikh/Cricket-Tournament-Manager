@@ -30,8 +30,8 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-function TournamentCard() {
-
+function TournamentCard({ tournament }) {
+    const { firstPrize, secondPrize, thirdPrize } = tournament;
     const classes = useStyles();
 
     const prizes = ['iPhone !!', 'Samsing J2', '#2Inch Monitor']
@@ -40,14 +40,14 @@ function TournamentCard() {
         <Card className={classes.root}>
             <CardContent>
                 <Typography className={classes.name}>
-                    Boishakhi Tournament
+                    {tournament.name}
                 </Typography>
                 <Typography className={classes.cardBody}>
                     <Box flexGrow={1}>
                         <span className={classes.placeholder}>Prizes</span>
-                        {prizes.map((peize, i) =>
+                        {[firstPrize, secondPrize, thirdPrize].map((prize, i) =>
                             <Box textAlign="left">
-                                <span className={classes.indexName}>{i}.</span> {peize}
+                                <span className={classes.indexName}>{i}.</span> {prize}
                             </Box>
                         )}
                     </Box>
@@ -55,15 +55,15 @@ function TournamentCard() {
                     <Box flexGrow={1}>
                         <span className={classes.placeholder}>Venue</span>
                         <Box>
-                            <span>Mollahat</span>
+                            <span>{tournament.place}</span>
                         </Box>
                     </Box>
                 </Typography>
-                <Typography style={{textAlign: 'center'}}>
+                <Typography style={{ textAlign: 'center' }}>
                     <span className={classes.placeholder}>Time</span>
                     <Box>
-                        <span style={{fontSize: 14,fontWeight: 'bold'}}>17Jun,2020</span><br/>
-                        <span style={{fontSize: 12,color: 'orangered'}}>6 hours from now</span>
+                        <span style={{ fontSize: 14, fontWeight: 'bold' }}>{tournament.startDate}</span><br />
+                        <span style={{ fontSize: 12, color: 'orangered' }}>6 hours from now</span>
                     </Box>
                 </Typography>
             </CardContent>

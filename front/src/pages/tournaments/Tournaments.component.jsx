@@ -3,14 +3,15 @@ import { useRecoilState } from 'recoil'
 import { allTournamentsState } from './tournaments.atom'
 import { getTournaments } from './tournaments.api';
 import TournamentCard from '../../components/TournamentCard.component';
-import { makeStyles, IconButton, Tooltip } from '@material-ui/core';
+import { makeStyles, IconButton, Tooltip, Grid } from '@material-ui/core';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { Link } from 'react-router-dom';
 
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        position: 'relative'
+        position: 'relative',
+        marginTop: 30
     },
     createTournament: {
         position: 'absolute',
@@ -19,6 +20,11 @@ const useStyles = makeStyles((theme) => ({
     },
     createButton: {
         color: 'red',
+    },
+    tournamentContainer: {
+        display: 'flex',
+        width: '80%',
+        margin: 'auto'
     }
 }))
 
@@ -48,8 +54,14 @@ function Tournaments() {
                     </Tooltip>
                 </Link>
             </div>
-            <div className="">
-                <TournamentCard />
+            <div className={classes.tournamentContainer}>
+                <Grid container justify="center" spacing={3}>
+                    {allTournaments.map(tournament => (
+                        <Grid item xs={12} sm={6} md={4}>
+                            <TournamentCard key={tournament._id} tournament={tournament} />
+                        </Grid>
+                    ))}
+                </Grid>
             </div>
         </div>
     )
