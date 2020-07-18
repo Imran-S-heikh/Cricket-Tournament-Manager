@@ -9,6 +9,7 @@ import Info from '../components/Info.component';
 import Bowling from '../components/Bowling.component';
 import { useRecoilValue } from 'recoil';
 import { currentUserState } from '../recoil/atoms';
+import { Redirect } from 'react-router-dom';
 
 const drawerWidth = '100%';
 
@@ -76,6 +77,8 @@ function Profile() {
     const [value, setValue] = useState('info')
     const classes = useStyles();
     const currentUser = useRecoilValue(currentUserState);
+
+    // if(!currentUser) return <Redirect to="/login"/>
 
     return (
         <Paper className={classes.root}>

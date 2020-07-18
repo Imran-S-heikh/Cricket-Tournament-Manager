@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -13,8 +13,25 @@ import Signup from './pages/signup/Signup.component';
 import Profile from './pages/Profile.page';
 import Match from './pages/match/Match.page';
 import Matches from './pages/matches/Matches.page';
+import { getUser } from './app.api';
+import { useRecoilState } from 'recoil';
+import { currentUserState } from './recoil/atoms';
+import Tournaments from './pages/tournaments/Tournaments.component';
+import Teams from './pages/teams/Teams.component';
+import CreateTeam from './components/CreateTeam.component';
+import CreateTournament from './components/CreateTournament';
 
 function App() {
+  const [currentUser,setCurrentUser] = useRecoilState(currentUserState);
+
+  useEffect(() => {
+    if (document.cookie.includes('jwt')) {
+      getUser().then(res => {
+        setCurrentUser(res.data.player)
+      }).catch();
+    }
+  }, [])
+
   return (
     <Router>
       <Header />
@@ -28,13 +45,25 @@ function App() {
         <Route path="/profile" exact>
           <Profile />
         </Route>
-         <Route path="/matches" exact>
-          <Matches/>
+        <Route path="/matches" exact>
+          <Matches />
+        </Route>
+        <Route path="/createTeam" exact>
+          <CreateTeam />
+        </Route>
+        <Route path="/createTournament" exact>
+          <CreateTournament />
+        </Route>
+        <Route path="/tournaments" exact>
+          <Tournaments />
+        </Route>
+        <Route path="/teams" exact>
+          <Teams />
         </Route>
         <Route path="/match/:id" exact>
           <Match />
         </Route>
-         <Route path="/">
+        <Route path="/">
           <Home />
         </Route>
       </Switch>

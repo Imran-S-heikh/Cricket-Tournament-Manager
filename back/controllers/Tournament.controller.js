@@ -8,9 +8,7 @@ exports.getTournaments = catchAsync(async(req,res)=>{
 
     res.status(200).json({
         status: 'success',
-        data: {
-            tournaments
-        }
+        tournaments
     });
 });
 

@@ -9,28 +9,25 @@ const {objFilter} = require('../utils/filter.object');
 exports.createTeam = catchAsync(async (req, res, next) => {
     const filteredTeam = objFilter(req.body,'name');
 
-    req.body.captain = req.player.id; 
+    filteredTeam.captain = req.player.id; 
 
     const newTeam = await Team.create(filteredTeam);
+    const popupatedTeam = await Team.findById(newTeam.id).populate({path:'captain',select: 'name'})
     await Player.findByIdAndUpdate(req.player.id,{$addToSet: {role: 'captain','teams.all': newTeam._id},$set: {status: 'busy','teams.current': newTeam._id}})
 
     res.status(200).json({
         status: 'success',
-        data: {
-            team: newTeam
-        }
+        team: popupatedTeam
     })
 });
 
 
 exports.getTeams = catchAsync(async (req, res, next) => {
-    const teams = await Team.find().populate('players');
+    const teams = await Team.find().populate('players').populate({path:'captain',select: 'name'})
 
     res.status(200).json({
         status: 'success',
-        data: {
-            teams
-        }
+         teams
     })
 });
 
@@ -66,9 +63,7 @@ exports.joinTournament = catchAsync( async (req,res,next)=>{
 
     res.status(200).json({
         status: 'success',
-        data: {
-            tournament: newTournament
-        }
+        tournament: newTournament
     })
 });
 
@@ -78,9 +73,7 @@ exports.deletePlayer = catchAsync(async (req, res, next) => {
 
     res.status(204).json({
         status: 'success',
-        data: {
-            data:null
-        }
+        data:null
     })
 });
 

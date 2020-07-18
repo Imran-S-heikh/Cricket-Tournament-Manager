@@ -48,7 +48,7 @@ function Sidebar({ toggle, drawer }) {
     }
 
     if (!currentUser) {
-        history.push('/')
+        // history.push('/')
         return null
     }
 
@@ -75,7 +75,10 @@ function Sidebar({ toggle, drawer }) {
                             <ListItemText primary="Matches" onClick={() => handleClick('/matches')} />
                         </ListItem>
                         <ListItem button>
-                            <ListItemText primary="Cibtril" />
+                            <ListItemText primary="Tournaments" onClick={() => handleClick('/tournaments')}/>
+                        </ListItem>
+                        <ListItem button>
+                            <ListItemText primary="Teams" onClick={() => handleClick('/teams')}/>
                         </ListItem>
                     </List>
                 </Box>

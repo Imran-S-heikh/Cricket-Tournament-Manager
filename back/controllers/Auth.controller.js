@@ -121,3 +121,18 @@ exports.checkHost = catchAsync(async (req, res, next) => {
     req.tournament = tournament;
     next();
 });
+
+exports.authenticate = catchAsync(async (req,res,next)=>{
+    const token = req.cookies.jwt;
+    if (!token) return next(new AppError('Please login to access', 401));
+
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+    const currentPlayer = await Player.findById(decoded.id);
+    if (!currentPlayer) return next(new AppError('Player Not found, Please Sign Up', 404));
+
+    res.status(200).json({
+        status: 'success',
+        player: currentPlayer
+    })
+})

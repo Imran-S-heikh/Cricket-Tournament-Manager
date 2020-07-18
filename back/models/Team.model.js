@@ -18,7 +18,10 @@ const teamSchema = new mongoose.Schema({
             }
         }
     ],
-    captain: mongoose.Schema.ObjectId,
+    captain: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Player'
+    },
     status: {
         type: String,
         default: 'free-agent',
