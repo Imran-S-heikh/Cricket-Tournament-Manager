@@ -1,6 +1,13 @@
 import React from 'react'
 import { Card, makeStyles, CardContent, CardActions, Typography, Button, Box, ListItem } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add';
+import DoneRoundedIcon from '@material-ui/icons/DoneRounded';
+import { useRecoilValue } from 'recoil';
+import { currentUserState } from '../recoil/atoms';
+import { getTeam } from '../pages/teams/teams.api';
+import Axios from 'axios';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -33,8 +40,27 @@ const useStyles = makeStyles((theme) => ({
 function TournamentCard({ tournament }) {
     const { firstPrize, secondPrize, thirdPrize } = tournament;
     const classes = useStyles();
+    const currentUser = useRecoilValue(currentUserState);
+    const [join, setJoin] = useState(false);
 
-    const prizes = ['iPhone !!', 'Samsing J2', '#2Inch Monitor']
+    useEffect(()=>{
+        tournament.teams.map(obj=>{
+            if(obj.team === currentUser.teams.current){
+                setJoin(true)
+            }
+        })
+    },[currentUser])
+
+    const handleClick = async (event) => {
+        Axios({
+            method: 'POST',
+            url: `api/v1/teams/join/${tournament._id}`
+        }).then(res => {
+            setJoin(true)
+        }).catch(err=>{
+            console.log(err)
+        })
+    }
 
     return (
         <Card className={classes.root}>
@@ -68,9 +94,14 @@ function TournamentCard({ tournament }) {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button fullWidth variant="contained" startIcon={<AddIcon />} >
-                    Join Tournament
-                </Button>
+                {join ?
+                    <Button fullWidth variant="contained" startIcon={<DoneRoundedIcon />} >
+                        Pending
+                    </Button> :
+                    <Button onClick={handleClick} fullWidth variant="contained" startIcon={<AddIcon />} >
+                        Join Tournament
+                    </Button>
+                }
             </CardActions>
         </Card>
     )

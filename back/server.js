@@ -6,7 +6,7 @@ const mongoose  = require('mongoose');
 dotenv.config({path: path.join(__dirname,'config.env')});
 
 const port  = process.env.PORT || 3000;
-const DB = `${process.env.DB_STRING}:27017/cricket__`; 
+const DB = `${process.env.DB_STRING}:27017/cricket__data`; 
 
 mongoose.connect(DB, {
     useNewUrlParser: true,

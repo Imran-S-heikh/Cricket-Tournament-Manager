@@ -80,6 +80,9 @@ function Sidebar({ toggle, drawer }) {
                         <ListItem button>
                             <ListItemText primary="Teams" onClick={() => handleClick('/teams')}/>
                         </ListItem>
+                        <ListItem button>
+                            <ListItemText primary="Start a Match" onClick={() => handleClick('/startMatch')}/>
+                        </ListItem>
                     </List>
                 </Box>
             </Drawer>

@@ -6,10 +6,11 @@ const router = express.Router();
 
 router.route('/')
       .get(matchController.getMatches)
+       .post(authController.protect, authController.umpireCheck, matchController.createMatch)
 
 router.route('/:id')
       .get(matchController.getMatch)
-      .post(authController.protect, authController.umpireCheck, matchController.createMatch)
+     
 // .patch(matchController.updateMatch)
 
 router.route('/over/:id')

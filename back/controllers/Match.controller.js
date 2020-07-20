@@ -14,6 +14,7 @@ exports.getMatches = catchAsync(async (req, res, next) => {
 });
 
 exports.getMatch = catchAsync(async (req, res, next) => {
+
     const match = await Match.findById(req.params.id)
         .populate([
             {path:[
@@ -29,9 +30,7 @@ exports.getMatch = catchAsync(async (req, res, next) => {
 
     res.status(200).json({
         status: 'success',
-        data: {
-            match
-        }
+        match
     });
 });
 
@@ -40,9 +39,7 @@ exports.createMatch = catchAsync(async (req, res, next) => {
 
     res.status(200).json({
         status: 'success',
-        data: {
-            match: newMatch
-        }
+        match: newMatch
     });
 });
 

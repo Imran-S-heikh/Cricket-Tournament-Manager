@@ -31,9 +31,9 @@ function PlayingEleven({ team, active}) {
                     {team.name}
                     <span className={classes.status}>{team.status}</span>
                 </ListItem>
-                {team.players.map((pl) =>
-                    <ListItem key={pl.id}>
-                        <Badge color="secondary" variant="dot" invisible={pl.id !== active} >
+                {team.playingEleven.map((pl) =>
+                    <ListItem key={pl._id}>
+                        <Badge color="secondary" variant="dot" invisible={pl._id !== active} >
                             {pl.name}
                         </Badge>
                     </ListItem>)}

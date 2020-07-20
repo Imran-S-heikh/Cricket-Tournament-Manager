@@ -74,16 +74,28 @@ exports.protect = catchAsync(async (req, res, next) => {
 });
 
 exports.umpireCheck = catchAsync(async (req, res, next) => {
-    const { role, tournaments, status } = req.player;
-    const tournamentId = req.params.id;
+    const { role, tournaments } = req.player;
+    const tournamentId = req.body.tournament;
+    const tournament = await Tournament.findById(tournamentId);
+    let status ;
+    tournament.umpires.filter(obj=>{
+        const umpire = obj.umpire.toString()
+        if (req.player.id === umpire) {
+            status = obj.status;
+        }
+    })
+
+    console.log(typeof(tournaments.current) , tournamentId )
 
     //Check this is a umpire 
     if (!role.includes('umpire')) {
         return next(new AppError('Only a Umpire can update match', 401));
     }
+    
+    // console.log(tournamentId,status)
 
     // Check if Umpire Authorized by the Tournament
-    if (tournaments.current !== tournamentId || status !== 'approved') {
+    if (tournaments.current.toString() !== tournamentId || status !== 'approved') {
         return next(new AppError('You are not authorized in this tournament', 401));
     }
 
@@ -92,14 +104,14 @@ exports.umpireCheck = catchAsync(async (req, res, next) => {
 });
 
 exports.checkCaptain = catchAsync(async (req, res, next) => {
-    const { teamId } = req.body;
+    const teamId = req.player.teams.current;
     const { role, id } = req.player;
 
     if (!role.includes('captain')) return next(new AppError('You are not Captain', 401));
 
     const team = await Team.findById(teamId);
 
-    if (!team) return next(new AppError('No team found', 404));
+    // if (!team) return next(new AppError('No team found', 404));
     if (team.captain != id) return next(new AppError('Only team captain can do this', 401));
 
     req.team = team;

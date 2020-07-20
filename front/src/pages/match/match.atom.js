@@ -3,7 +3,8 @@ import { TOTAL_SCORE_STATE, SCORE_STATE, TEAM_ONE_STATE, TEAM_TWO_STATE,POPUP_OP
 POPUP_STATE,
 CURRENT_BATSMAN_STATE,
 CURRENT_BOWLER_STATE,
-CURRENT_BOWLING_TEAM_STATE} from "./match.keys";
+CURRENT_BOWLING_TEAM_STATE,
+OVERS_STATE} from "./match.keys";
 
 export const totalScoreState = atom({
     key: TOTAL_SCORE_STATE,
@@ -38,6 +39,11 @@ export const popupOpenState = atom({
     default: false
 });
 
+export const oversState = atom({
+    key: OVERS_STATE,
+    default: 0
+});
+
 
 export const currentBatsmanState = atom({
     key: CURRENT_BATSMAN_STATE,
@@ -66,34 +72,20 @@ export const currentBowlerState = atom({
 export const teamTwoState = atom({
     key: TEAM_TWO_STATE,
     default: {
-        name: 'India',
-        captain: 'Koli The Wall',
-        status: 'bowling',
-        players: [
-            { name: 'Pathan', id: '565' },
-            { name: 'Kohli', id: '57667' },
-            { name: 'MS Dhoni', id: '47546' },
-            { name: 'hardik Pandiya', id: '45656' },
-            { name: 'Vhuben Kumar', id: '545667' },
-            { name: 'Rohit Sharma', id: '4565' }
-        ]
+        name: '',
+        captain: '',
+        status: '',
+        playingEleven: []
     }
 })
 
 export const teamOneState = atom({
     key: TEAM_ONE_STATE,
     default: {
-        name: 'Bangladesh',
-        captain: 'John Cina',
-        status: 'batting',
-        players: [
-            { name: 'Tamim Iqbal', id: '9347' },
-            { name: 'Shakib Al Hansan', id: '3434' },
-            { name: 'Saif The Boss', id: '4434' },
-            { name: 'Liton The Perfect Timer', id: '5675' },
-            { name: 'Soumya The Huge', id: '567' },
-            { name: 'Musi The Dependable', id: '3478' }
-        ]
+        name: '',
+        captain: '',
+        status: '',
+        playingEleven: []
     }
 })
 

@@ -12,17 +12,17 @@ export const initialPopupsState = selector({
         return {
             bowler: {
                 title: 'Select a Bowler',
-                players: battingTeam === 'teamOne' ? teamTwo['players']  : teamOne['players'],
+                players: battingTeam === 'teamOne' ? teamTwo['playingEleven']  : teamOne['playingEleven'],
                 type: 'bowler'
             },
             striker: {
                 title: 'Select a Striker Batsman',
-                players: battingTeam === 'teamOne' ? teamOne['players'] : teamTwo['players'],
+                players: battingTeam === 'teamOne' ? teamOne['playingEleven'] : teamTwo['playingEleven'],
                 type: 'striker' 
             },
             nonStriker: {
                 title: 'Select a Non-Striker Batsman',
-                players: battingTeam === 'teamOne' ? teamOne['players'] : teamTwo['players'],
+                players: battingTeam === 'teamOne' ? teamOne['playingEleven'] : teamTwo['playingEleven'],
                 type: 'non-striker' 
             }
         }

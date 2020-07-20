@@ -12,7 +12,7 @@ const router = express.Router();
 //       .post(tournamentController.joinTour)
 
 router.route('/teams/:id')
-      .get(tournamentController.getTeams)
+      .get(tournamentController.getTournamentTeams)
 
 router.route('/')
       .get(tournamentController.getTournaments)

@@ -33,14 +33,14 @@ exports.getTeams = catchAsync(async (req, res, next) => {
 
 
 exports.getTeam = catchAsync(async (req, res, next) => {
-    // const newTeam = await Team.create(req.body);
+    const team = await Team.findById(req.params.id).populate({path: 'players.player',select: 'name'})
 
-    // res.status(200).json({
-    //     status: 'success',
-    //     data: {
-    //         team: newTeam
-    //     }
-    // })
+    if(!team) return next(new AppError('No team found',404))
+
+    res.status(200).json({
+        status: 'success',
+        team
+    })
 });
 
 

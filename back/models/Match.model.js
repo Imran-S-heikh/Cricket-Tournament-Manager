@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 
 const matchTeamSchema = mongoose.Schema({
+    name: String,
+    id: String,
     playingEleven: [{
         type: mongoose.Schema.ObjectId,
         ref: 'Player'
@@ -46,7 +48,7 @@ const matchSchema = new mongoose.Schema({
         },
         electedTo: {
             type: String,
-            enum: ['bat', 'ball']
+            enum: ['batting', 'bowling']
         }
     },
     status: {

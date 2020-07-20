@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Box, TextField, Paper, Button } from '@material-ui/core';
 import { SignupStyle } from '../login/Login.component';
 import { signupRequest } from './signup.api';
-import { useSetRecoilState, useRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { currentUserState } from '../../recoil/atoms';
 import { Redirect } from 'react-router-dom';
 
@@ -15,7 +15,7 @@ function Signup() {
     const [confirmPassword, setConfirmPassword] = useState('12345678');
     const [currentUser,setCurrentUser] = useRecoilState(currentUserState);
 
-    if(currentUser) return <Redirect to="/home"/>
+    if(currentUser) return <Redirect to="/"/>
 
     const handleSubmit = () => {
         const obj = {
@@ -27,6 +27,7 @@ function Signup() {
         }
         signupRequest(obj).then(({data})=>{
             setCurrentUser(data.player)
+            console.log(data)
         }).catch((err)=>{
             console.log(err)
         })

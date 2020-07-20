@@ -9,6 +9,7 @@ export const TEAM_TWO_STATE = 'TEAM_TWO';
 export const POPUP_OPEN_STATE = 'POPUP_OPEN_STATE';
 export const POPUP_STATE = 'POPUP_STATE';
 export const CURRENT_BOWLING_TEAM_STATE = 'CURRENT_BOWLING_TEAM_STATE';
+export const OVERS_STATE = 'OVERS_STATE';
 
 
 //Selectors key

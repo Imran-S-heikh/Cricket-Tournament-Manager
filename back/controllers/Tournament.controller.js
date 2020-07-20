@@ -32,13 +32,30 @@ exports.createTournament = catchAsync( async (req,res)=>{
     })
 });
 
-exports.getTournament = (req,res)=>{
-    
-}
+exports.getTournament = catchAsync(async (req,res,next)=>{
+    const id = req.params.id;
+    const tournament = await Tournament.findById(id).populate({path: 'teams.team'})
 
-exports.getTeams = (req,res)=>{
-    
-}
+    if(!tournament) return next(new AppError('NO tournament found',404));
+
+    res.status(200).json({
+        status: 'success',
+        tournament
+    })
+})
+
+exports.getTournamentTeams = catchAsync(async (req,res,next)=>{
+    const id = req.params.id;
+    const tournament = await Tournament.findById(id);
+
+    if(!tournament) return next(new AppError('NO tournament found',404));
+
+    res.status(200).json({
+        status: 'success',
+        teams
+    })
+})
+
 
 exports.createTeam = (req,res)=>{
     

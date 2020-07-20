@@ -20,6 +20,7 @@ import Tournaments from './pages/tournaments/Tournaments.component';
 import Teams from './pages/teams/Teams.component';
 import CreateTeam from './components/CreateTeam.component';
 import CreateTournament from './components/CreateTournament';
+import MatchStart from './components/MatchStart.component';
 
 function App() {
   const [currentUser,setCurrentUser] = useRecoilState(currentUserState);
@@ -60,7 +61,10 @@ function App() {
         <Route path="/teams" exact>
           <Teams />
         </Route>
-        <Route path="/match/:id" exact>
+        <Route path="/startMatch" exact>
+          <MatchStart />
+        </Route>
+        <Route path="/match/:matchId" exact>
           <Match />
         </Route>
         <Route path="/">

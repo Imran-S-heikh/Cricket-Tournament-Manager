@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@material-ui/core';
 import { v4 as uniqId } from 'uuid';
 import { useRecoilState } from 'recoil';
-import { totalScoreState,teamOneState,teamTwoState,currentBattingTeamState,scoreState, currentBatsmanState, popupState, popupOpenState, currentBowlerState, currentBowlingTeamState } from '../pages/match/match.atom';
+import { totalScoreState,teamOneState,teamTwoState,currentBattingTeamState,scoreState, currentBatsmanState, popupState, popupOpenState, currentBowlerState, currentBowlingTeamState, oversState } from '../pages/match/match.atom';
 import { useSetRecoilState } from 'recoil';
 import { useRecoilValue } from 'recoil';
 
@@ -18,6 +18,7 @@ function ScoreUpdater({updates,size,extra = false}) {
     const teamTwo = useRecoilValue(teamTwoState);
     const battingTeam = useRecoilValue(currentBattingTeamState);
     const bowlingTeam = useRecoilValue(currentBowlingTeamState);
+    const [overs,setOvers] = useRecoilState(oversState)
     const teams = {teamOne,teamTwo};
 
     
@@ -62,7 +63,7 @@ function ScoreUpdater({updates,size,extra = false}) {
         });
         if (newScore === 'w') {
             setTotalScore({...totalScore,wicket: totalScore.wicket + 1});
-            setPopup({title: 'Select a Batsman',players: teams[battingTeam].players,type: 'striker'})
+            setPopup({title: 'Select a Batsman',players: teams[battingTeam].playingEleven,type: 'striker'})
             setPopupOpen(true);
         }
 
@@ -75,7 +76,8 @@ function ScoreUpdater({updates,size,extra = false}) {
 
     const updateBowler = (newScore) => {
         if (currentBowler.legalDeliviries + 1 >= 6) {
-            setPopup({title: 'Select a Bowler',players: teams[bowlingTeam].players,type: 'bowler'})
+            setOvers(overs+1);
+            setPopup({title: 'Select a Bowler',players: teams[bowlingTeam].playingEleven,type: 'bowler'})
             setPopupOpen(true);
         };
         //Check if its a legal delivery
