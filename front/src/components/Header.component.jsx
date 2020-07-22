@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { AppBar, Toolbar, IconButton, makeStyles, Box } from '@material-ui/core';
+import { AppBar, Toolbar, IconButton, makeStyles, Box, List, ListItem, ListItemText } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import { Link, useHistory } from 'react-router-dom';
@@ -21,6 +21,13 @@ const useStyles = makeStyles((theme) => ({
     title: {
         flexGrow: 1
     },
+    list: {
+        display: 'flex'
+    },
+    listContainer: {
+        flexGrow: 1,
+        
+    }
 }));
 
 function Header() {
@@ -49,6 +56,22 @@ function Header() {
                                 <HomeRoundedIcon />
                             </IconButton>
                         </Link>
+                    </Box>
+                    <Box className={classes.listContainer}>
+                        <List className={classes.list}>
+                            <ListItem button>
+                                <ListItemText primary="Players"/>
+                            </ListItem>
+                            <ListItem button>
+                                <ListItemText primary="Matches"/>
+                            </ListItem>
+                            <ListItem button>
+                                <ListItemText primary="Tournaments"/>
+                            </ListItem>
+                            <ListItem button>
+                                <ListItemText primary="Teams"/>
+                            </ListItem>
+                        </List>
                     </Box>
                     <Hide hide={!me.active}>
                         <Link to="/login" >
